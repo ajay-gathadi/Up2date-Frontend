@@ -7,6 +7,9 @@ This is a modern react-based frontend application of the salon business. The app
     - Employee data
     - Services offered by the salons
 
+## Upcoming feature of the application
+This application will be having the feature of displaying the business summary and reports, Employee management, Services management and the ability to see the history of services taken by the particular customer.
+
 ## Technologies Used
     - React 19
     - Material UI
