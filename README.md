@@ -1,4 +1,7 @@
-## Overview
+## Project Name
+Up2date frontend application
+
+## Description
 This is a modern react-based frontend application of the salon application. The application integrates with backend APIs to manage and display:
     - Customer Information
     - Employee data
