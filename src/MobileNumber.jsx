@@ -17,6 +17,12 @@ function MobileNumber({ value = "", onChange, error = null }) {
       value={value}
       onChange={handleMobileChange}
       variant="outlined"
+      inputMode="numeric"
+      placeholder="Enter Mobile Number"
+      maxLength={10}
+      minLength={10}
+      error={Boolean(error)}
+      helperText={error}
       slotProps={{
         input: {
           startAdornment: (
@@ -25,13 +31,6 @@ function MobileNumber({ value = "", onChange, error = null }) {
             </InputAdornment>
           ),
         },
-
-        htmlInput: {
-          inputMode: "numeric",
-          placeholder: "Enter Mobile Number",
-          maxLength: 10,
-          minLength: 10,
-        },
       }}
       margin="normal"
       sx={{
@@ -39,21 +38,21 @@ function MobileNumber({ value = "", onChange, error = null }) {
         mt: 0,
         mb: 0,
         "& .MuiOutlinedInput-root": {
-          color: error ? "error.main" : "black",
+          color: "black",
           fontFamily: "Inter",
           "& fieldset": {
-            borderColor: "black",
+            borderColor: error ? "error.main" : "black",
           },
           "&:hover fieldset": {
-            borderColor: "black",
+            borderColor: error ? "error.main" : "black",
           },
           "&.Mui-focused fieldset": {
-            borderColor: "black",
+            borderColor: error ? "error.main" : "black",
           },
         },
         "& .MuiInputLabel-root": {
           fontFamily: "Inter",
-          color: "black",
+          color: error ? "error.main" : "black",
         },
       }}
     />
