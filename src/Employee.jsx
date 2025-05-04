@@ -176,7 +176,7 @@ function Employee({ value = "", onChange, error = null }) {
                       width: 22,
                       height: 22,
                       mr: 1,
-                      bgcolor: "primary.light",
+                      bgcolor: "rgba(223, 168, 18, 0.69)",
                       fontSize: "0.8rem",
                     }}
                   >
