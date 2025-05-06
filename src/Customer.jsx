@@ -272,6 +272,15 @@ export default function Customer() {
                         }
                         error={formErrors.gender}
                       />
+                      {formErrors.gender && (
+                        <Typography
+                        color="error"
+                        variant="caption"
+                        sx={{ display: "block", mt: 1, ml: 2, fontFamily: "Inter" }}
+                        >
+                          {formErrors.gender}
+                        </Typography>
+                      )}
                     </Grid>
 
                     <Grid size={{ xs: 12 }} sx={{ mt: 1 }}>
