@@ -24,9 +24,9 @@ import {
   KeyboardArrowUp,
 } from "@mui/icons-material";
 
-function Services({ value, onChange, gender }) {
+function Services({ value, onChange, gender , error = null}) {
   const [services, setServices] = useState([]);
-  const [error, setError] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [alwaysOpen, setAlwaysOpen] = useState(false);
@@ -72,7 +72,7 @@ function Services({ value, onChange, gender }) {
         setServices(data);
         setLoading(false);
       } catch (error) {
-        setError(error.message);
+        setFetchError(error.message);
         setLoading(false);
       }
     };
@@ -128,6 +128,7 @@ function Services({ value, onChange, gender }) {
       fullWidth
       margin="normal"
       variant="outlined"
+      error={Boolean(error)}
       sx={{
         width: "400px",
       }}
@@ -137,9 +138,9 @@ function Services({ value, onChange, gender }) {
         shrink={true}
         sx={{
           fontFamily: "Inter",
-          color: "black",
+          color: error ? "error.main" : "black",
           "&.Mui-focused": {
-            color: "black",
+            color: error ? "error.main" : "black",
           },
         }}
       >
@@ -172,6 +173,7 @@ function Services({ value, onChange, gender }) {
         label="Services"
         notched={true}
         onClick={toggleDropdown}
+        error={Boolean(error)}
         readOnly
         endAdornment={
           !alwaysOpen && (
@@ -216,9 +218,21 @@ function Services({ value, onChange, gender }) {
           "& .MuiOutlinedInput-input": {
             fontSize: "14px",
           },
+
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
+          },
+
+          '&:hover .MuiOutlinedInput-notchedOutline':{
+            borderColor : error ? "error.main" : alwaysOpen ? "rgba(0,0,0,0.23)" : "rgba(223, 168, 18, 0.69)",
+          },
+
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline' : {
+                  borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
+          }
         }}
       />
-
+      
       <Collapse in={shouldAlwaysOpen} timeout="auto">
         {loading ? (
           <Box
@@ -230,9 +244,9 @@ function Services({ value, onChange, gender }) {
           >
             <CircularProgress size={24} />
           </Box>
-        ) : error ? (
+        ) : fetchError ? (
           <Alert severity="error" sx={{ mt: 1 }}>
-            Error loading services: {error}
+            Error loading services: {fetchError}
           </Alert>
         ) : filteredServices.length === 0 ? (
           <Alert severity="info" sx={{ mt: 1 }}>
