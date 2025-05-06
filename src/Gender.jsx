@@ -8,7 +8,7 @@ import {
 import MaleIcon from "@mui/icons-material/Man";
 import FemaleIcon from "@mui/icons-material/Woman";
 
-function Gender({ value, onChange }) {
+function Gender({ value, onChange, error = null }) {
   const handleGenderSelection = (event) => {
     onChange(event.target.value);
   };
@@ -18,16 +18,17 @@ function Gender({ value, onChange }) {
   };
 
   return (
-    <FormControl component="fieldset" margin="normal">
+    <FormControl component="fieldset" margin="normal" error={Boolean(error)}>
       <FormLabel
         component="legend"
         sx={{
           ...interFontStyle,
+          color: error ? "error.main" : "text.primary",
           "&.Mui-focused": {
-            color: "black",
+            color: error ? "error.main" : "black",
           },
           "&:hover": {
-            color: "black",
+            color: error ? "error.main" : "black",
           },
         }}
       >
@@ -44,12 +45,20 @@ function Gender({ value, onChange }) {
           value="Male"
           control={
             <Radio
-              icon={<MaleIcon color="action" />}
-              checkedIcon={<MaleIcon color="primary" />}
+              icon={<MaleIcon color={error ? "error" : "action"} />}
+              checkedIcon={<MaleIcon color={error ? "error": "rgba(223, 168, 18, 0.69)"} />}
               sx={{
                 "& .MuiSvgIcon-root": {
                   fontSize: 28,
                 },
+
+                '&.Mui-checked':{
+                  color: 'rgba(223, 168, 18, 0.69)'
+                },
+
+                '&:hover' : {
+                  backgroundColor: 'rgba(223, 168, 18, 0.04)'
+                }
               }}
             />
           }
@@ -74,10 +83,17 @@ function Gender({ value, onChange }) {
           value="Female"
           control={
             <Radio
-              icon={<FemaleIcon color="action" />}
-              checkedIcon={<FemaleIcon color="primary" />}
+              icon={<FemaleIcon color={error ? "error" : "action"} />}
+              checkedIcon={<FemaleIcon color={error ? "error" : "rgba(223, 168, 18, 0.69)"} />}
               sx={{
                 "& .MuiSvgIcon-root": { fontSize: 28 },
+                '&.Mui-checked':{
+                  color: 'rgba(223, 168, 18, 0.69)'
+                },
+
+                '&:hover' : {
+                  backgroundColor: 'rgba(223, 168, 18, 0.04)'
+                }
               }}
             />
           }
