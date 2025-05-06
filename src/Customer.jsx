@@ -307,6 +307,15 @@ export default function Customer() {
                             }
                             error={formErrors.employeeName}
                           />
+                          {formErrors.employeeName && (
+                            <Typography
+                            color="error"
+                            variant="caption"
+                            sx={{ display:'block', mt: 1, ml:2, fontFamily: "Inter" }}
+                            >
+                              {formErrors.employeeName}
+                            </Typography>
+                          )}
                         </Grid>
                       </Grid>
                     </Grid>
