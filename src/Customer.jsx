@@ -286,6 +286,7 @@ export default function Customer() {
                               updateCustomerData("services", value)
                             }
                             gender={customerData.gender}
+                            error={formErrors.services}
                           />
                           {formErrors.services && (
                             <Typography
