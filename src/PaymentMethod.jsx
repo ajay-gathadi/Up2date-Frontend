@@ -79,6 +79,7 @@ function PaymentMethod({ value = { cash: null, online: null }, onChange }) {
           fontWeight: 450,
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <PaymentsIcon sx={{ mr: 1, fontSize: 20 }} />
