@@ -130,13 +130,13 @@ function Employee({ value = "", onChange, error = null }) {
           }}
           sx={{
             "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? "error.main" : "rgba(0,0,0,0.23)",
+              borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? "error.main" : "rgba(0,0,0,0.87)",
+              borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? "error.main" : "black",
+              borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
             },
             fontFamily: "Inter",
           }}
