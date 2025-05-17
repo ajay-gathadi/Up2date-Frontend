@@ -14,6 +14,8 @@ import {
   Collapse,
   InputLabel,
   OutlinedInput,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -24,27 +26,81 @@ import {
   KeyboardArrowUp,
 } from "@mui/icons-material";
 
-function Services({ value, onChange, gender , error = null}) {
+function Services({ value, onChange, gender, error = null }) {
   const [services, setServices] = useState([]);
   const [fetchError, setFetchError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [alwaysOpen, setAlwaysOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const servicesRef = useRef(null);
+  const formControlRef = useRef(null);
+  const outlinedInputRef = useRef(null);
 
-  const handleToggleMode = () => {
-    setAlwaysOpen((alwaysOpen) => !alwaysOpen);
+  console.log(
+    `%cRENDER: alwaysOpen=<span class="math-inline">\{alwaysOpen\}, isOpen\=</span>{isOpen}, anchorEl=${
+      anchorEl ? "exists" : "null"
+    }`,
+    "color: blue; font-weight: bold;"
+  );
 
+  const handleClick = (event) => {
     if (!alwaysOpen) {
+      setAnchorEl(event.currentTarget);
       setIsOpen(true);
     }
   };
 
-  const toggleDropdown = () => {
+  const handleClose = () => {
     if (!alwaysOpen) {
-      setIsOpen((isOpen) => !isOpen);
+      setAnchorEl(null);
+      setIsOpen(false);
     }
+  };
+
+  const handleToggleMode = (event, newCheckedState) => {
+    event.stopPropagation();
+    console.log(
+      `%cHANDLE_TOGGLE_MODE: newCheckedState=<span class="math-inline">\{newCheckedState\}, current alwaysOpen\=</span>{alwaysOpen}`,
+      "color: green; font-weight: bold;"
+    );
+
+    setAlwaysOpen(newCheckedState);
+
+    if (!newCheckedState) {
+      console.log(
+        "%cHANDLE_TOGGLE_MODE: Setting to OFF state (anchor=null, isOpen=false)",
+        "color: green;"
+      );
+      setAnchorEl(null);
+      setIsOpen(false);
+    } else {
+      console.log(
+        "%cHANDLE_TOGGLE_MODE: Setting to ON state (anchor=ref, isOpen=true)",
+        "color: green;"
+      );
+      setAnchorEl(outlinedInputRef.current);
+      setIsOpen(true);
+    }
+  };
+
+  const toggleDropdown = (event) => {
+    if (alwaysOpen) {
+      return;
+    }
+    // setIsOpen((isOpen) => !isOpen);
+    setIsOpen((prev) => {
+      const willOpen = !prev;
+      if (willOpen) {
+        setAnchorEl(event?.currentTarget || outlinedInputRef.current);
+        if (outlinedInputRef.current) {
+          outlinedInputRef.current.focus();
+        }
+      } else {
+        setAnchorEl(null);
+      }
+      return willOpen;
+    });
   };
 
   useEffect(() => {
@@ -81,13 +137,25 @@ function Services({ value, onChange, gender , error = null}) {
   }, []);
 
   useEffect(() => {
+    console.log(
+      `%cEFFECT_CLICK_OUTSIDE: Setup. isOpen=<span class="math-inline">\{isOpen\}, alwaysOpen\=</span>{alwaysOpen}`,
+      "color: orange;"
+    );
     function handleClickOutside(event) {
       if (isOpen && !alwaysOpen) {
         if (
-          servicesRef.current &&
-          !servicesRef.current.contains(event.target)
+          formControlRef.current &&
+          !formControlRef.current.contains(event.target) &&
+          !(anchorEl && anchorEl.parentNode.contains(event.target)) &&
+          !event.target.closest(".MuiMenu-paper") &&
+          !event.target.closest(".switch-container")
         ) {
+          console.log("handleClickOutside called: closing");
+
           setIsOpen(false);
+          setAnchorEl(null);
+        } else {
+          console.log("handleClickOutside called: inside");
         }
       }
     }
@@ -96,7 +164,7 @@ function Services({ value, onChange, gender , error = null}) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, alwaysOpen]);
+  }, [isOpen, alwaysOpen, anchorEl]);
 
   const filteredServices = useMemo(() => {
     if (!gender || gender === "") {
@@ -113,7 +181,8 @@ function Services({ value, onChange, gender , error = null}) {
     return services;
   }, [services, gender]);
 
-  const handleServiceChange = (serviceId) => {
+  const handleServiceChange = (serviceId, event) => {
+    event.stopPropagation();
     if (value.includes(serviceId)) {
       onChange(value.filter((id) => id !== serviceId));
     } else {
@@ -124,13 +193,14 @@ function Services({ value, onChange, gender , error = null}) {
 
   return (
     <FormControl
-      ref={servicesRef}
+      ref={formControlRef}
       fullWidth
       margin="normal"
       variant="outlined"
       error={Boolean(error)}
       sx={{
         width: "400px",
+        position: "relative",
       }}
     >
       <InputLabel
@@ -147,7 +217,8 @@ function Services({ value, onChange, gender , error = null}) {
         Services
       </InputLabel>
 
-      <Box
+      {/* <Box
+      className="switch-container"
         sx={{
           position: "absolute",
           top: "-25px",
@@ -164,15 +235,21 @@ function Services({ value, onChange, gender , error = null}) {
           size="small"
           checked={alwaysOpen}
           onChange={handleToggleMode}
+          // onClick={(e) => e.stopPropagation()}
           color="primary"
         />
-      </Box>
+      </Box> */}
 
       <OutlinedInput
+        ref={outlinedInputRef}
         id="services-select"
         label="Services"
         notched={true}
-        onClick={toggleDropdown}
+        onClick={(e) => {
+          if (!alwaysOpen) {
+            toggleDropdown(e);
+          }
+        }}
         error={Boolean(error)}
         readOnly
         endAdornment={
@@ -181,7 +258,10 @@ function Services({ value, onChange, gender , error = null}) {
               component="span"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleDropdown();
+                toggleDropdown(e);
+                if (outlinedInputRef.current) {
+                  outlinedInputRef.current.focus();
+                }
               }}
               sx={{
                 display: "flex",
@@ -202,37 +282,160 @@ function Services({ value, onChange, gender , error = null}) {
         }
         value={
           value.length > 0
-            ? `${value.length} ${value.length === 1 ? "service" : "services"}`
+            ? `${value.length} ${
+                value.length === 1 ? "service selected" : "services selected"
+              }`
             : "Select Services"
         }
         sx={{
           fontFamily: "Inter",
           // fontSize: "14px",
           cursor: alwaysOpen ? "default" : "pointer",
-          "&:hover": {
-            borderColor: alwaysOpen
-              ? "rgba(0, 0, 0, 0.23)"
-              : "rgba(0, 0, 0, 0.5)",
+          transition: "all 0.2s ease",
+
+          "& .MuiOutlinedInput-root": {
+            cursor: alwaysOpen ? "default" : "pointer",
           },
 
           "& .MuiOutlinedInput-input": {
             fontSize: "14px",
+            textAlign: "center",
+            color: value.length === 0 ? "rgba(0,0,0,0.38)" : "inherit",
+            cursor: alwaysOpen ? "default" : "pointer",
           },
 
-          '& .MuiOutlinedInput-notchedOutline': {
+          "& .MuiOutlinedInput-notchedOutline": {
             borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
           },
 
-          '&:hover .MuiOutlinedInput-notchedOutline':{
-            borderColor : error ? "error.main" : alwaysOpen ? "rgba(0,0,0,0.23)" : "rgba(223, 168, 18, 0.69)",
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: error ? "error.main" : "rgba(223, 168, 18, 1)",
           },
 
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline' : {
-                  borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
-          }
+          "&.Mui-focused": {
+            borderColor: "rgba(223, 168, 18, 0.05)",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
+            },
+          },
         }}
       />
-      
+
+      <Menu
+        anchorEl={anchorEl}
+        open={isOpen}
+        onClose={() => {
+          if (!alwaysOpen) {
+            setAnchorEl(null);
+            setIsOpen(false);
+          }
+        }}
+        keepMounted
+        disableAutoFocusItem
+        marginThreshold={0}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        slotProps={{
+          list: {
+            disablePadding: true,
+            onClick: (e) => e.stopPropagation(),
+            sx: {
+              maxHeight: "200px",
+              overflowY: "auto",
+            },
+          },
+          paper: {
+            sx: {
+              mt: "4px",
+              height: "auto",
+              maxHeiht: "200px",
+              width: anchorEl ? `${anchorEl.offsetWidth}px` : "auto",
+              overflowY: "auto",
+              boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "rgba(155, 38, 38, 0.05)",
+                borderRadius: "4px",
+              },
+
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0,0.2)",
+                borderRadius: "4px",
+                "&:hover": {
+                  backgroundColor: "rgba(0,0,0,0.58)",
+                },
+              },
+            },
+          },
+        }}
+      >
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              p: 2,
+            }}
+          >
+            <CircularProgress size={24} />
+          </Box>
+        ) : fetchError ? (
+          <MenuItem disabled>
+            <Alert severity="error" sx={{ mt: 1 }}>
+              Error loading services: {fetchError}
+            </Alert>
+          </MenuItem>
+        ) : filteredServices.length === 0 ? (
+          <MenuItem disabled>
+            <Alert severity="info" sx={{ mt: 1 }}>
+              No services available for {gender || "selected gender"}
+            </Alert>
+          </MenuItem>
+        ) : (
+          filteredServices.map((currentService) => (
+            <MenuItem
+              key={currentService.serviceId}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleServiceChange(currentService.serviceId, e);
+              }}
+              disableRipple
+              sx={{
+                fontFamily: "Inter",
+                fontSize: "14px",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                },
+              }}
+            >
+              <Checkbox
+                checked={value.includes(currentService.serviceId)}
+                size="small"
+                sx={{
+                  "&.Mui-checked": {
+                    color: "rgba(223, 168, 18, 0.69)",
+                  },
+                }}
+              />
+              {currentService.serviceName}
+            </MenuItem>
+          ))
+        )}
+      </Menu>
+
+      {/*       
       <Collapse in={shouldAlwaysOpen} timeout="auto">
         {loading ? (
           <Box
@@ -317,7 +520,7 @@ function Services({ value, onChange, gender , error = null}) {
             </FormGroup>
           </Paper>
         )}
-      </Collapse>
+      </Collapse> */}
     </FormControl>
   );
 }
