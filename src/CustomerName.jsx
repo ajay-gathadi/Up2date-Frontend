@@ -30,6 +30,11 @@ function CustomerName({ value = "", onChange, error = null }) {
         width: "400px",
         mt: 0,
         mb: 0,
+        "& input": {
+          textAlign: "center",
+          fontSize: "14px",
+          paddingRight: "50px !important",
+        },
         "& .MuiInputLabel-root": {
           color: error ? "error.main" : "black",
           fontFamily: "Inter",
@@ -43,13 +48,13 @@ function CustomerName({ value = "", onChange, error = null }) {
         "& .MuiOutlinedInput-root": {
           fontFamily: "Inter",
           "& fieldset": {
-            borderColor: "black",
+            borderColor: "rgba(223, 168, 18, 0.69)",
           },
           "&:hover fieldset": {
-            borderColor: "black",
+            borderColor: "rgba(223, 168, 18, 0.69)",
           },
           "&.Mui-focused fieldset": {
-            borderColor: "black",
+            borderColor: "rgba(223, 168, 18, 0.69)",
           },
         },
       }}
