@@ -40,14 +40,20 @@ function MobileNumber({ value = "", onChange, error = null }) {
         "& .MuiOutlinedInput-root": {
           color: "black",
           fontFamily: "Inter",
+
+          "& input": {
+            textAlign: "center",
+            fontSize: "14px",
+            paddingRight: "50px !important",
+          },
           "& fieldset": {
-            borderColor: error ? "error.main" : "black",
+            borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
           },
           "&:hover fieldset": {
-            borderColor: error ? "error.main" : "black",
+            borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
           },
           "&.Mui-focused fieldset": {
-            borderColor: error ? "error.main" : "black",
+            borderColor: error ? "error.main" : "rgba(223, 168, 18, 0.69)",
           },
         },
         "& .MuiInputLabel-root": {
