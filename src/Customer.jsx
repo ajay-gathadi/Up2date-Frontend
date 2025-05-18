@@ -229,19 +229,23 @@ export default function Customer() {
         }}
         variant="outlined"
       >
-        <Typography
-          variant="h5"
-          component="h2"
-          gutterBottom
-          sx={{ mb: 2, fontFamily: "Inter", fontWeight: 600 }}
-        >
-          Customer Details
-        </Typography>
-
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 10 }} sx={{ mx: "auto" }}>
               <Card variant="outlined" sx={{ height: "100%" }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  gutterBottom
+                  sx={{
+                    mb: 2,
+                    fontFamily: "Inter",
+                    fontWeight: 600,
+                    paddingTop: "20px",
+                  }}
+                >
+                  Customer Details
+                </Typography>
                 <CardContent>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
@@ -254,7 +258,7 @@ export default function Customer() {
                       />
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid size={{ xs: 12, sm: 6 }} sx={{ paddingTop: "0.5px" }}>
                       <MobileNumber
                         value={customerData.mobileNumber}
                         onChange={(value) =>
@@ -264,7 +268,7 @@ export default function Customer() {
                       />
                     </Grid>
 
-                    <Grid size={{ xs: 12 }} sx={{ mt: 1 }}>
+                    <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 2 }}>
                       <Gender
                         value={customerData.gender}
                         onChange={(value) =>
@@ -274,16 +278,21 @@ export default function Customer() {
                       />
                       {formErrors.gender && (
                         <Typography
-                        color="error"
-                        variant="caption"
-                        sx={{ display: "block", mt: 1, ml: 2, fontFamily: "Inter" }}
+                          color="error"
+                          variant="caption"
+                          sx={{
+                            display: "block",
+                            mt: 1,
+                            ml: 2,
+                            fontFamily: "Inter",
+                          }}
                         >
                           {formErrors.gender}
                         </Typography>
                       )}
                     </Grid>
 
-                    <Grid size={{ xs: 12 }} sx={{ mt: 1 }}>
+                    <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 1 }}>
                       <Grid container spacing={2}>
                         <Grid
                           size={{ xs: 12, sm: 6 }}
@@ -318,9 +327,14 @@ export default function Customer() {
                           />
                           {formErrors.employeeName && (
                             <Typography
-                            color="error"
-                            variant="caption"
-                            sx={{ display:'block', mt: 1, ml:2, fontFamily: "Inter" }}
+                              color="error"
+                              variant="caption"
+                              sx={{
+                                display: "block",
+                                mt: 1,
+                                ml: 2,
+                                fontFamily: "Inter",
+                              }}
                             >
                               {formErrors.employeeName}
                             </Typography>
@@ -337,6 +351,7 @@ export default function Customer() {
                         alignItems: "center",
                         mt: 2,
                         margin: "auto",
+                        paddingTop: 1,
                       }}
                     >
                       <Box sx={{ width: "100%", mx: "auto" }}>
@@ -395,6 +410,8 @@ export default function Customer() {
                         size="medium"
                         disabled={isLoading}
                         sx={{
+                          backgroundColor: "rgba(223, 168, 18, 0.69)",
+                          color: "black",
                           fontFamily: "Inter",
                           px: 4,
                           py: 1,
@@ -402,6 +419,13 @@ export default function Customer() {
                           textTransform: "none",
                           fontWeight: 600,
                           boxShadow: 2,
+                          "&:hover": {
+                            backgroundColor: "rgba(223, 168, 18, 0.89)", // Slightly darker yellow on hover
+                          },
+                          "&:disabled": {
+                            backgroundColor: "rgba(223, 168, 18, 0.3)", // Lighter yellow when disabled
+                            color: "rgba(0, 0, 0, 1)", // Faded black when disabled
+                          },
                         }}
                       >
                         {isLoading ? "Saving..." : "Submit"}
