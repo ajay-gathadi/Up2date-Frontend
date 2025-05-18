@@ -45,6 +45,7 @@ function CustomerName({ value = "", onChange, error = null }) {
         "& .MuiInputLabel-root.Mui-focused": {
           color: "black",
         },
+
         "& .MuiOutlinedInput-root": {
           fontFamily: "Inter",
           "& fieldset": {
