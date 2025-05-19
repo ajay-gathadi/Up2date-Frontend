@@ -151,7 +151,7 @@ function PaymentMethod({ value = { cash: null, online: null }, onChange }) {
                 onChange={(e) => handleAmountChange("cash", e.target.value)}
                 sx={{
                   mt: 0.5,
-                  ml: 4,
+                  ml: 4.4,
                   mr: 1,
 
                   width: { xs: "100%", sm: "220px" },
@@ -164,6 +164,8 @@ function PaymentMethod({ value = { cash: null, online: null }, onChange }) {
                     },
                     "& input": {
                       padding: "8px 4px",
+                      fontSize: "14px",
+                      textAlign: "center",
                     },
                   },
 
@@ -267,6 +269,8 @@ function PaymentMethod({ value = { cash: null, online: null }, onChange }) {
                     },
                     "& input": {
                       padding: "8px 4px",
+                      fontSize: "14px",
+                      textAlign: "center",
                     },
                   },
 
