@@ -104,7 +104,7 @@ function Employee({ value = "", onChange, error = null }) {
               return (
                 <Typography
                   sx={{
-                    color: "text.secondary",
+                    color: "rgba(0,0,0,0.38)",
                     fontFamily: "Inter",
                     ml: 0.5,
                     fontSize: "14px",
