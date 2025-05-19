@@ -309,8 +309,7 @@ function Services({ value, onChange, gender, error = null }) {
               toggleDropdown(e);
             }
           }}
-          // placeholder="Select Services"
-          value={getDisplayValue()}
+          // value={getDisplayValue()}
           error={Boolean(error)}
           readOnly
           endAdornment={
@@ -341,12 +340,19 @@ function Services({ value, onChange, gender, error = null }) {
               </Box>
             )
           }
+          value={
+            value.length > 0
+              ? `${value.length} ${
+                  value.length === 1 ? "service selected" : "services selected"
+                }`
+              : "Select Services"
+          }
           sx={{
             fontFamily: "Inter",
             // fontSize: "14px",
             cursor: alwaysOpen ? "default" : "pointer",
             transition: "all 0.2s ease",
-
+            height: "56px",
             "& .MuiOutlinedInput-root": {
               cursor: alwaysOpen ? "default" : "pointer",
             },
