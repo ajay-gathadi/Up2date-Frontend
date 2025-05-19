@@ -52,6 +52,14 @@ function Employee({ value = "", onChange, error = null }) {
     return employee ? employee.employeeName : "";
   };
 
+  const handleDeleteEmployee = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropogation();
+    }
+    onChange("");
+  };
+
   return (
     <FormControl
       fullWidth
@@ -112,7 +120,7 @@ function Employee({ value = "", onChange, error = null }) {
                 avatar={
                   <Avatar
                     sx={{
-                      bgcolor: "primary.main",
+                      bgcolor: "rgba(223, 168, 18, 0.69)",
                       width: 24,
                       height: 24,
                       "& .MuiSvgIcon-root": {
@@ -124,7 +132,17 @@ function Employee({ value = "", onChange, error = null }) {
                   </Avatar>
                 }
                 label={getEmployeeName()}
-                sx={{ fontFamily: "Inter" }}
+                onDelete={(e) => handleDeleteEmployee(e)}
+                sx={{
+                  fontFamily: "Inter",
+
+                  "& .MuiChip-deleteIcon": {
+                    color: "rgba(0,0,0,0.54)",
+                  },
+                  "&:hover": {
+                    color: "rgba(0,0,0,0.87)",
+                  },
+                }}
               />
             );
           }}
@@ -166,7 +184,7 @@ function Employee({ value = "", onChange, error = null }) {
                 sx={{
                   fontFamily: "Inter",
                   "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.08)",
+                    backgroundColor: "rgba(233, 216, 92, 0.08)",
                   },
                 }}
               >
