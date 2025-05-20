@@ -218,8 +218,8 @@ function Services({ value, onChange, gender, error = null }) {
     <>
       <Stack
         direction="row"
-        spacing={1}
-        sx={{ flexWrap: "wrap", gap: "4px", overflow: "auto" }}
+        spacing={0.5}
+        sx={{ flexWrap: "wrap", gap: "3px", overflow: "auto" }}
       >
         {selectedServiceObject.map((currentService) => (
           <Chip
@@ -233,7 +233,7 @@ function Services({ value, onChange, gender, error = null }) {
               "& .MuiOutlinedInput-input": {
                 display: "flex",
                 alignItems: "center",
-                padding: "2px 5px",
+                padding: "2px 2px",
                 fontSize: "14px",
                 height: "auto",
                 cursor: alwaysOpen ? "default" : "pointer",
