@@ -1,28 +1,43 @@
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import PhoneIcon from "@mui/icons-material/Phone";
+import { useState } from "react";
 
 function MobileNumber({ value = "", onChange, error = null }) {
+  const [touched, setTouched] = useState(false);
+
   const handleMobileChange = (event) => {
     const input = event.target.value;
-    if (input === "" || /^[0-9]+$/.test(input)) {
+    if (input === "" || (/^[0-9]+$/.test(input) && input.length <= 10)) {
       onChange(input);
     }
+  };
+
+  const getErrorMessage = () => {
+    if (touched && value && value.length !== 10) {
+      return "Mobile number must be 10 digits";
+    }
+    return error;
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
   };
 
   return (
     <TextField
       id="mobileNumber"
+      type="tel"
       label="Mobile Number"
       value={value}
       onChange={handleMobileChange}
+      onBlur={handleBlur}
       variant="outlined"
       inputMode="numeric"
       placeholder="Enter Mobile Number"
-      maxLength={10}
       minLength={10}
-      error={Boolean(error)}
-      helperText={error}
+      error={Boolean((value && value.length !== 10) || error)}
+      helperText={getErrorMessage()}
       slotProps={{
         input: {
           startAdornment: (
@@ -30,6 +45,11 @@ function MobileNumber({ value = "", onChange, error = null }) {
               <PhoneIcon />
             </InputAdornment>
           ),
+        },
+        htmlInput: {
+          maxLength: 10,
+          pattern: "[0-9]*",
+          inputMode: "numeric",
         },
       }}
       margin="normal"
