@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Services from "./Services.jsx";
 import Employee from "./Employee.jsx";
 import PaymentMethod from "./PaymentMethod.jsx";
+import salonName from "./assets/Up2Date Family Salon.png";
 import {
   Alert,
   CardContent,
@@ -218,8 +219,11 @@ export default function Customer() {
   };
 
   return (
-    <Container maxWidth={false} sx={{ py: 4 }}>
-      <Paper
+    <Container
+      maxWidth={false}
+      // sx={{ py: 1 }}
+    >
+      {/* <Paper
         elevation={1}
         sx={{
           padding: 2,
@@ -228,55 +232,128 @@ export default function Customer() {
           overflowY: "auto",
         }}
         variant="outlined"
+      > */}
+      <Box
+        sx={{
+          pt: 1,
+          position: "absolute",
+          top: "-1px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1,
+        }}
       >
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 10 }} sx={{ mx: "auto" }}>
-              <Card variant="outlined" sx={{ height: "100%" }}>
-                <Typography
-                  variant="h5"
-                  component="h2"
-                  gutterBottom
-                  sx={{
-                    mb: 2,
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    paddingTop: "20px",
-                  }}
-                >
-                  Customer Details
-                </Typography>
-                <CardContent>
+        <img
+          src={salonName}
+          style={{
+            height: "40px",
+            objectFit: "contain",
+          }}
+        />
+      </Box>
+
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          border: "1px solid lightgray",
+          borderRadius: "8px",
+          paddingTop: 1,
+        }}
+      >
+        {/* {/* <Grid container spacing={3}> */}
+        <Grid size={{ xs: 12, md: 10 }} sx={{ mx: "auto" }}>
+          <Card variant="outlined" sx={{ height: "100%", border: "none" }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              gutterBottom
+              sx={{
+                mb: 1,
+                fontFamily: "Inter",
+                fontWeight: 600,
+                paddingTop: "20px",
+              }}
+            >
+              Customer Details
+            </Typography>
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
+                  <CustomerName
+                    value={customerData.customerName}
+                    onChange={(value) =>
+                      updateCustomerData("customerName", value)
+                    }
+                    error={formErrors.customerName}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }} sx={{ paddingTop: "0.5px" }}>
+                  <MobileNumber
+                    value={customerData.mobileNumber}
+                    onChange={(value) =>
+                      updateCustomerData("mobileNumber", value)
+                    }
+                    error={formErrors.mobileNumber}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 0.7 }}>
+                  <Gender
+                    value={customerData.gender}
+                    onChange={(value) => updateCustomerData("gender", value)}
+                    error={formErrors.gender}
+                  />
+                  {formErrors.gender && (
+                    <Typography
+                      color="error"
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        mt: 1,
+                        ml: 2,
+                        fontFamily: "Inter",
+                      }}
+                    >
+                      {formErrors.gender}
+                    </Typography>
+                  )}
+                </Grid>
+
+                <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 0.7 }}>
                   <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, sm: 6, lg: 6 }}>
-                      <CustomerName
-                        value={customerData.customerName}
+                    <Grid
+                      size={{ xs: 12, sm: 6 }}
+                      // sx={{ mt: 1 }}
+                    >
+                      <Services
+                        value={customerData.services}
                         onChange={(value) =>
-                          updateCustomerData("customerName", value)
+                          updateCustomerData("services", value)
                         }
-                        error={formErrors.customerName}
+                        gender={customerData.gender}
+                        error={formErrors.services}
                       />
+                      {formErrors.services && (
+                        <Typography
+                          color="error"
+                          variant="caption"
+                          sx={{ display: "block", mt: 1 }}
+                        >
+                          {formErrors.services}
+                        </Typography>
+                      )}
                     </Grid>
 
-                    <Grid size={{ xs: 12, sm: 6 }} sx={{ paddingTop: "0.5px" }}>
-                      <MobileNumber
-                        value={customerData.mobileNumber}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Employee
+                        value={customerData.employeeName}
                         onChange={(value) =>
-                          updateCustomerData("mobileNumber", value)
+                          updateCustomerData("employeeName", value)
                         }
-                        error={formErrors.mobileNumber}
+                        error={formErrors.employeeName}
                       />
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 2 }}>
-                      <Gender
-                        value={customerData.gender}
-                        onChange={(value) =>
-                          updateCustomerData("gender", value)
-                        }
-                        error={formErrors.gender}
-                      />
-                      {formErrors.gender && (
+                      {formErrors.employeeName && (
                         <Typography
                           color="error"
                           variant="caption"
@@ -287,94 +364,45 @@ export default function Customer() {
                             fontFamily: "Inter",
                           }}
                         >
-                          {formErrors.gender}
+                          {formErrors.employeeName}
                         </Typography>
                       )}
                     </Grid>
+                  </Grid>
+                </Grid>
 
-                    <Grid size={{ xs: 12 }} sx={{ mt: 1, paddingTop: 1 }}>
-                      <Grid container spacing={2}>
-                        <Grid
-                          size={{ xs: 12, sm: 6 }}
-                          // sx={{ mt: 1 }}
-                        >
-                          <Services
-                            value={customerData.services}
-                            onChange={(value) =>
-                              updateCustomerData("services", value)
-                            }
-                            gender={customerData.gender}
-                            error={formErrors.services}
-                          />
-                          {formErrors.services && (
-                            <Typography
-                              color="error"
-                              variant="caption"
-                              sx={{ display: "block", mt: 1 }}
-                            >
-                              {formErrors.services}
-                            </Typography>
-                          )}
-                        </Grid>
+                <Grid
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    mt: 2,
+                    margin: "auto",
+                    paddingTop: 0.8,
+                  }}
+                >
+                  <Box sx={{ width: "100%", mx: "auto" }}>
+                    <PaymentMethod
+                      value={customerData.paymentMethod}
+                      onChange={(value) =>
+                        updateCustomerData("paymentMethod", value)
+                      }
+                    />
 
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                          <Employee
-                            value={customerData.employeeName}
-                            onChange={(value) =>
-                              updateCustomerData("employeeName", value)
-                            }
-                            error={formErrors.employeeName}
-                          />
-                          {formErrors.employeeName && (
-                            <Typography
-                              color="error"
-                              variant="caption"
-                              sx={{
-                                display: "block",
-                                mt: 1,
-                                ml: 2,
-                                fontFamily: "Inter",
-                              }}
-                            >
-                              {formErrors.employeeName}
-                            </Typography>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
+                    {formErrors.paymentMethod && (
+                      <Typography
+                        color="error"
+                        variant="caption"
+                        sx={{ display: "block", mt: 1 }}
+                      >
+                        {formErrors.paymentMethod}
+                      </Typography>
+                    )}
+                  </Box>
+                </Grid>
 
-                    <Grid
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        mt: 2,
-                        margin: "auto",
-                        paddingTop: 1,
-                      }}
-                    >
-                      <Box sx={{ width: "100%", mx: "auto" }}>
-                        <PaymentMethod
-                          value={customerData.paymentMethod}
-                          onChange={(value) =>
-                            updateCustomerData("paymentMethod", value)
-                          }
-                        />
-
-                        {formErrors.paymentMethod && (
-                          <Typography
-                            color="error"
-                            variant="caption"
-                            sx={{ display: "block", mt: 1 }}
-                          >
-                            {formErrors.paymentMethod}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Grid>
-
-                    {/* <Grid container justifyContent="center">
+                {/* <Grid container justifyContent="center">
                       <Grid sx={{ mt: 1 }} size={{ xs: 12, sm: 10, md: 10, lg: 6 }}>
                         <PaymentMethod
                           value={customerData.paymentMethod}
@@ -395,65 +423,66 @@ export default function Customer() {
                       </Grid>
                     </Grid> */}
 
-                    <Grid
-                      size={{ xs: 12 }}
-                      sx={{
-                        mt: 3,
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        disabled={isLoading}
-                        sx={{
-                          backgroundColor: "rgba(223, 168, 18, 0.69)",
-                          color: "black",
-                          fontFamily: "Inter",
-                          px: 4,
-                          py: 1,
-                          borderRadius: 2,
-                          textTransform: "none",
-                          fontWeight: 600,
-                          boxShadow: 2,
-                          "&:hover": {
-                            backgroundColor: "rgba(223, 168, 18, 0.89)", // Slightly darker yellow on hover
-                          },
-                          "&:disabled": {
-                            backgroundColor: "rgba(223, 168, 18, 0.3)", // Lighter yellow when disabled
-                            color: "rgba(0, 0, 0, 1)", // Faded black when disabled
-                          },
-                        }}
-                      >
-                        {isLoading ? "Saving..." : "Submit"}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </form>
+                <Grid
+                  size={{ xs: 12 }}
+                  sx={{
+                    // mt: 0.7,
+                    paddingTop: 0.5,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    disabled={isLoading}
+                    sx={{
+                      backgroundColor: "rgba(223, 168, 18, 0.69)",
+                      color: "black",
+                      fontFamily: "Inter",
+                      px: 4,
+                      py: 1,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      fontWeight: 600,
+                      boxShadow: 2,
+                      "&:hover": {
+                        backgroundColor: "rgba(223, 168, 18, 0.89)", // Slightly darker yellow on hover
+                      },
+                      "&:disabled": {
+                        backgroundColor: "rgba(223, 168, 18, 0.3)", // Lighter yellow when disabled
+                        color: "rgba(0, 0, 0, 1)", // Faded black when disabled
+                      },
+                    }}
+                  >
+                    {isLoading ? "Saving..." : "Submit"}
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        {/* </Grid> */}
+      </form>
 
-        <Snackbar
-          open={notification.open}
-          autoHideDuration={5000}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={5000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
           onClose={handleCloseNotification}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          severity={notification.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleCloseNotification}
-            severity={notification.severity}
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            {notification.message}
-          </Alert>
-        </Snackbar>
-      </Paper>
+          {notification.message}
+        </Alert>
+      </Snackbar>
+      {/* </Paper> */}
     </Container>
   );
 
