@@ -24,7 +24,7 @@ const AppDrawer = ({ open, onClose }) => {
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
       <Box
-        sx={{ width: 250 }}
+        sx={{ width: 245, paddingTop: '32px' }}
         role="presentation"
         onClick={onClose}
         onKeyDown={onClose}
@@ -32,7 +32,7 @@ const AppDrawer = ({ open, onClose }) => {
         <List>
           <ListItem>
             <ListItemText
-              primary="Menu"
+              // primary="Menu"
               slotProps={{
                 primary: { variant: "h6", align: "center" },
               }}
@@ -42,7 +42,10 @@ const AppDrawer = ({ open, onClose }) => {
           {drawerItems.map((currentItem) => (
             <ListItem key={currentItem.text} disablePadding>
               <ListItemButton component={Link} to={currentItem.path}>
-                <ListItemIcon>{currentItem.icon}</ListItemIcon>
+                <ListItemIcon sx={
+                  {color: 'rgba(223, 168, 18, 0.69)'}
+                }>{currentItem.icon}</ListItemIcon>
+                <ListItemText primary={currentItem.text}/>
               </ListItemButton>
             </ListItem>
           ))}
