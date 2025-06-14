@@ -1,12 +1,13 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
-import {BrowserRouter, Navigate, Route, Routes,} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import "./App.css";
-import {AppBar, Box, CssBaseline, Drawer, IconButton, Toolbar,} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import {Box, CssBaseline, Drawer, IconButton} from "@mui/material";
 import {useState} from "react";
+import MenuIcon from "@mui/icons-material/Menu";
 import AppDrawer from "./components/AppDrawer.jsx";
+import Toolbar from "@mui/material/Toolbar";
 import CustomerPage from "./Customer_Information/Customer.jsx";
 import DashboardPage from "./pages/DashBoard.jsx";
 
@@ -22,49 +23,6 @@ function App() {
         <BrowserRouter>
             <Box sx={{display: "flex", minHeight: "100vh", width: "100%"}}>
                 <CssBaseline/>
-                <AppBar
-                    position="fixed"
-                    sx={{
-                        zIndex: (theme) => theme.zIndex.drawer + 1,
-                        // backgroundColor: 'rgba(223, 168, 18, 0.69)'
-                        backgroundColor: 'transparent',
-                    }}
-                >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            edge="start"
-                            onClick={handleDrawerToggle}
-                            disableRipple
-                            sx={{
-                                mr: 2,
-                                color: 'black',
-                                '&.Mui-focusVisible': {
-                                    backgroundColor: 'transparent',
-                                    outline: 'none !important',
-                                    boxShadow: 'none !important',
-                                    border: 'none !important',
-                                    '&::before': {
-                                        content: '"none !important"',
-                                        display: 'none !important',
-                                    },
-                                    '&::after': {
-                                        content: '"none !important"',
-                                        display: 'none',
-                                        boxShadow: 'none !important',
-                                        backgroundColor: 'transparent !important',
-                                    },
-
-                                },
-                                '&:hover': {
-                                    backgroundColor: 'rgb(255,222,89)',
-                                }
-                            }}
-                        >
-                            <MenuIcon sx={{color: 'black'}}/>
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
 
                 <Drawer
                     variant="temporary"
@@ -80,18 +38,49 @@ function App() {
                     }}
                 >
                     <Toolbar/>
-                    < AppDrawer open={openDrawer} onClose={handleDrawerToggle}/>
+                    < AppDrawer
+                        // open={openDrawer}
+                        onClose={handleDrawerToggle}
+                    />
                 </Drawer>
                 <Box
                     component='main'
                     sx={{
                         flexGrow: 1,
                         p: 3,
-                        // mt: "64px",
-                        // minHeight: "calc(100vh-64px)",
                     }}
                 >
-                    <Toolbar/>
+                    <IconButton
+                        color="inherit"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                        disableRipple
+                        sx={{
+                            mr: 2,
+                            color: 'black',
+                            '&.Mui-focusVisible': {
+                                backgroundColor: 'transparent',
+                                outline: 'none !important',
+                                boxShadow: 'none !important',
+                                border: 'none !important',
+                                '&::before': {
+                                    content: '"none !important"',
+                                    display: 'none !important',
+                                },
+                                '&::after': {
+                                    content: '"none !important"',
+                                    display: 'none',
+                                    boxShadow: 'none !important',
+                                    backgroundColor: 'transparent !important',
+                                },
+                            },
+                            '&:hover': {
+                                backgroundColor: 'rgb(255,222,89)',
+                            }
+                        }}
+                    >
+                        <MenuIcon sx={{color: 'black'}}/>
+                    </IconButton>
                     <Routes>
                         <Route
                             path="/"
@@ -101,7 +90,6 @@ function App() {
                         <Route path="/dashboard" element={<DashboardPage/>}/>
                     </Routes>
                 </Box>
-
             </Box>
         </BrowserRouter>
     )
