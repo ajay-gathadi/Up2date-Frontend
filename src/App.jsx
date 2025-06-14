@@ -7,12 +7,11 @@ import {Box, CssBaseline, Drawer, IconButton} from "@mui/material";
 import {useState} from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppDrawer from "./components/AppDrawer.jsx";
-import Toolbar from "@mui/material/Toolbar";
 import CustomerPage from "./Customer_Information/Customer.jsx";
 import DashboardPage from "./pages/DashBoard.jsx";
+import Toolbar from "@mui/material/Toolbar";
 
 function App() {
-    // const [count, setCount] = useState(0)
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -23,6 +22,28 @@ function App() {
         <BrowserRouter>
             <Box sx={{display: "flex", minHeight: "100vh", width: "100%"}}>
                 <CssBaseline/>
+
+                <IconButton
+                    color="inherit"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    disableRipple
+                    disableFocusRipple
+                    sx={{
+                        position: 'fixed',
+                        top: 20,
+                        left: 25,
+                        color: 'black',
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                        outline: 'none !important',
+
+                        '&:hover': {
+                            backgroundColor: 'rgb(255,222,89)',
+                        }
+                    }}
+                >
+                    <MenuIcon sx={{color: 'black'}}/>
+                </IconButton>
 
                 <Drawer
                     variant="temporary"
@@ -37,50 +58,22 @@ function App() {
                         }
                     }}
                 >
-                    <Toolbar/>
+                    <Toolbar sx={{minHeight: '35px !important'}}/>
                     < AppDrawer
-                        // open={openDrawer}
                         onClose={handleDrawerToggle}
                     />
                 </Drawer>
+
+
                 <Box
                     component='main'
                     sx={{
                         flexGrow: 1,
                         p: 3,
+                        pt: 7.5,
+
                     }}
                 >
-                    <IconButton
-                        color="inherit"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        disableRipple
-                        sx={{
-                            mr: 2,
-                            color: 'black',
-                            '&.Mui-focusVisible': {
-                                backgroundColor: 'transparent',
-                                outline: 'none !important',
-                                boxShadow: 'none !important',
-                                border: 'none !important',
-                                '&::before': {
-                                    content: '"none !important"',
-                                    display: 'none !important',
-                                },
-                                '&::after': {
-                                    content: '"none !important"',
-                                    display: 'none',
-                                    boxShadow: 'none !important',
-                                    backgroundColor: 'transparent !important',
-                                },
-                            },
-                            '&:hover': {
-                                backgroundColor: 'rgb(255,222,89)',
-                            }
-                        }}
-                    >
-                        <MenuIcon sx={{color: 'black'}}/>
-                    </IconButton>
                     <Routes>
                         <Route
                             path="/"
