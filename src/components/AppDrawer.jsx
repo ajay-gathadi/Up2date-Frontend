@@ -1,5 +1,5 @@
 import {Dashboard, People} from "@mui/icons-material";
-import {Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText,} from "@mui/material";
+import {Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText,} from "@mui/material";
 import {Link} from "react-router-dom";
 
 const AppDrawer = ({open, onClose}) => {
@@ -9,13 +9,16 @@ const AppDrawer = ({open, onClose}) => {
             icon: <People/>,
             path: "/customer-details",
         },
-        {text: "Dashboard", icon: <Dashboard/>, path: "/dashboard"},
+        {
+            text: "Dashboard",
+            icon: <Dashboard/>,
+            path: "/dashboard"
+        },
     ];
 
     return (
-        // <Drawer anchor="left" open={open} onClose={onClose}>
         <Box
-            sx={{width: 245, paddingTop: '32px'}}
+            sx={{width: 245}}
             role="presentation"
             onClick={onClose}
             onKeyDown={onClose}
@@ -29,7 +32,6 @@ const AppDrawer = ({open, onClose}) => {
                         }}
                     />
                 </ListItem>
-                <Divider/>
                 {drawerItems.map((currentItem) => (
                     <ListItem key={currentItem.text} disablePadding>
                         <ListItemButton component={Link} to={currentItem.path}>
@@ -42,7 +44,6 @@ const AppDrawer = ({open, onClose}) => {
                 ))}
             </List>
         </Box>
-        // </Drawer>
     );
 };
 
