@@ -288,12 +288,6 @@ function PaymentMethod({value = {cash: null, online: null}, onChange}) {
                     sx={{
                         mb: 2,
                         px: 1,
-                        // maxWidth:
-                        //   value.cash !== null || value.online !== null ? "100%" : "170px",
-                        // width:
-                        //   value.cash !== null || value.online !== null
-                        //     ? "calc(100% - 27px)"
-                        //     : "auto",
                         ...getWidthStyles(),
                     }}
                 />
@@ -307,16 +301,8 @@ function PaymentMethod({value = {cash: null, online: null}, onChange}) {
                         bgcolor:
                             totalAmount > 0
                                 ? "rgba(223, 168, 18, 0.69)"
-                                : "rgba(235, 188, 60, 0.69)",
+                                : "rgba(223, 168, 18, 0.69)",
                         borderRadius: 1,
-                        // transition: "all 0.2s ease",
-                        // // width: "100%",
-                        // maxWidth:
-                        //   value.cash !== null || value.online !== null ? "100%" : "170px",
-                        // width:
-                        //   value.cash !== null || value.online !== null
-                        //     ? "calc(100% - 27px)"
-                        //     : "auto",
                         ...getWidthStyles(),
                     }}
                 >
