@@ -49,30 +49,15 @@ export default ({mode}) => {
                     changeOrigin: true,
                 },
 
-                /*
-                "/": {
+                "/dashboard/cash-collected-forDate": {
                     target: baseUrl,
                     changeOrigin: true,
-
-                    bypass: (req) => {
-                        // Don't proxy Vite's internal requests or static assets
-                        if (
-                            req.url.startsWith("/@") ||
-                            req.url.startsWith("/src/") ||
-                            req.url.startsWith("/node_modules/") ||
-                            req.url.indexOf("?") > 0 ||
-                            req.url.endsWith(".js") ||
-                            req.url.endsWith(".css") ||
-                            req.url.endsWith(".svg") ||
-                            req.url.endsWith(".png") ||
-                            req.url === "/" ||
-                            req.url === "/index.html"
-                        ) {
-                            return req.url;
-                        }
-                    },
                 },
-                */
+
+                "/dashboard/online-collected-forDate": {
+                    target: baseUrl,
+                    changeOrigin: true,
+                }
             },
         },
         appType: 'spa',
