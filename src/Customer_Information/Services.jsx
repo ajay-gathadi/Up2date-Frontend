@@ -182,11 +182,6 @@ function Services({value, onChange, gender, error = null}) {
         if (value.length === 0) {
             return "Select Services";
         }
-
-        // return filteredServices
-        //   .filter((service) => value.includes(service.serviceId))
-        //   .map((service) => service.serviceName)
-        //   .join(", ");
     };
 
     const selectedServiceObject = useMemo(() => {
@@ -261,29 +256,6 @@ function Services({value, onChange, gender, error = null}) {
                 >
                     Services
                 </InputLabel>
-
-                {/* <Box
-      className="switch-container"
-        sx={{
-          position: "absolute",
-          top: "-25px",
-          right: "10px",
-          display: "flex",
-          zIndex: 1,
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="caption" sx={{ mr: 1, fontFamily: "Inter" }}>
-          {shouldAlwaysOpen ? "Always Open" : "Click to open"}
-        </Typography>
-        <Switch
-          size="small"
-          checked={alwaysOpen}
-          onChange={handleToggleMode}
-          // onClick={(e) => e.stopPropagation()}
-          color="primary"
-        />
-      </Box> */}
 
                 <OutlinedInput
                     ref={outlinedInputRef}
