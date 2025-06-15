@@ -38,7 +38,7 @@ function App() {
                         outline: 'none !important',
 
                         '&:hover': {
-                            backgroundColor: 'rgb(255,222,89)',
+                            backgroundColor: 'rgba(223, 168, 18, 0.69)',
                         }
                     }}
                 >
