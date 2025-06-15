@@ -41,17 +41,14 @@ export default function Customer() {
 
     const createCustomerServices = async (customerId) => {
         const services = customerData.services.map(async (serviceId) => {
-            const totalAmount =
-                Number(customerData.paymentMethod.cash) +
-                Number(customerData.paymentMethod.online);
+            const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
+            const online_Amount = Number(customerData.paymentMethod.online) || 0;
+            const totalAmount = cash_Amount + online_Amount;
 
             let paymentMethodMode = "cash";
-            if (
-                customerData.paymentMethod.online > 0 &&
-                customerData.paymentMethod.cash > 0
-            ) {
+            if (cash_Amount > 0 && online_Amount > 0) {
                 paymentMethodMode = "both";
-            } else if (customerData.paymentMethod.online > 0) {
+            } else if (online_Amount > 0) {
                 paymentMethodMode = "online";
             }
 
@@ -61,9 +58,19 @@ export default function Customer() {
                 serviceId: serviceId,
                 employeeId: Number(customerData.employeeName),
                 paymentMethod: paymentMethodMode,
-                amount: totalAmount / customerData.services.length,
+                // amount: totalAmount / customerData.services.length,
+                // cashAmount: cash_Amount / customerData.services.length,
+                // onlineAmount: online_Amount / customerData.services.length,
+                amount: totalAmount,
+                cashAmount: cash_Amount,
+                onlineAmount: online_Amount,
                 serviceTakenDate: new Date().toISOString(),
             };
+            console.log("Sending customer service data: ", customerServiceData);
+            console.log("Cash Amount: ", cash_Amount);
+            console.log("Online Amount: ", online_Amount);
+            console.log("Total Amount: ", totalAmount);
+            console.log("Payment Method Object: ", customerData.paymentMethod);
 
             const sendResponseToBackend = await fetch("/customer-service", {
                 method: "POST",
@@ -239,7 +246,7 @@ export default function Customer() {
                 }}
                 variant="outlined"
             >
-                <forms
+                <form
                     onSubmit={handleSubmit}
                     style={{
                         height: "100%",
@@ -388,27 +395,6 @@ export default function Customer() {
                                         </Box>
                                     </Grid>
 
-                                    {/* <Grid container justifyContent="center">
-                      <Grid sx={{ mt: 1 }} size={{ xs: 12, sm: 10, md: 10, lg: 6 }}>
-                        <PaymentMethod
-                          value={customerData.paymentMethod}
-                          onChange={(value) =>
-                            updateCustomerData("paymentMethod", value)
-                          }
-                        />
-
-                        {formErrors.paymentMethod && (
-                          <Typography
-                            color="error"
-                            variant="caption"
-                            sx={{ display: "block", mt: 1 }}
-                          >
-                            {formErrors.paymentMethod}
-                          </Typography>
-                        )}
-                      </Grid>
-                    </Grid> */}
-
                                     <Grid
                                         size={{xs: 12}}
                                         sx={{
@@ -425,8 +411,7 @@ export default function Customer() {
                                             size="medium"
                                             disabled={isLoading}
                                             sx={{
-                                                // backgroundColor: "rgba(223, 168, 18, 0.69)",
-                                                backgroundColor: 'rgb(253,215,67)',
+                                                backgroundColor: "rgba(223, 168, 18, 0.69)",
                                                 color: "black",
                                                 fontFamily: "Inter",
                                                 px: 4,
@@ -452,19 +437,20 @@ export default function Customer() {
                         </Card>
                     </Grid>
                     {/* </Grid> */}
-                </forms>
+                </form>
 
                 <Snackbar
                     open={notification.open}
-                    autoHideDuration={5000}
+                    autoHideDuration={3000}
                     onClose={handleCloseNotification}
                     anchorOrigin={{vertical: "top", horizontal: "center"}}
+
                 >
                     <Alert
                         onClose={handleCloseNotification}
                         severity={notification.severity}
                         variant="filled"
-                        sx={{width: "100%"}}
+                        sx={{width: "100%", borderRadius: 10}}
                     >
                         {notification.message}
                     </Alert>
@@ -472,50 +458,4 @@ export default function Customer() {
             </Paper>
         </Container>
     );
-
-    // return (
-    //   <div>
-    //     <h1>Up2Date Family Salon</h1>
-    //     <h5>Customer Information</h5>
-
-    //     <form onSubmit={handleSubmit}>
-    //       <CustomerName
-    //         value={customerData.customerName}
-    //         onChange={(value) => updateCustomerData("customerName", value)}
-    //       />
-
-    //       <MobileNumber
-    //         value={customerData.mobileNumber}
-    //         onChange={(value) => updateCustomerData("mobileNumber", value)}
-    //       />
-
-    //       <Gender
-    //         value={customerData.gender}
-    //         onChange={(value) => updateCustomerData("gender", value)}
-    //       />
-
-    //       <Services
-    //         value={customerData.services}
-    //         onChange={(value) => updateCustomerData("services", value)}
-    //         gender={customerData.gender}
-    //       />
-
-    //       <Employee
-    //         value={customerData.employeeName}
-    //         onChange={(value) => updateCustomerData("employeeName", value)}
-    //       />
-
-    //       <PaymentMethod
-    //         value={customerData.paymentMethod}
-    //         onChange={(value) => updateCustomerData("paymentMethod", value)}
-    //       />
-
-    //       <button type="submit" disabled={isLoading}>
-    //         {isLoading ? "Saving..." : "Submit"}
-    //       </button>
-    //     </form>
-
-    //     {error && <p style={{ color: "red" }}>Error: {error}</p>}
-    //   </div>
-    // );
 }
