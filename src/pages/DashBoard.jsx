@@ -4,24 +4,23 @@ import {Error} from "@mui/icons-material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 
-const datePickerTheme = createTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: 'rgba(223, 168, 18, 0.69)',
         }
     },
-});
-
-const theme = createTheme({
     components: {
-        MuiOutlinedInput: {
+        MuiTextField: {
             styleOverrides: {
                 root: {
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(223, 168, 18, 0.69)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(223, 168, 18, 0.69)',
+                    '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                            borderColor: 'rgba(223, 168, 18, 0.69) !important',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'rgba(223, 168, 18, 0.69) !important',
+                        }
                     }
                 }
             }
@@ -141,16 +140,19 @@ function DashBoard() {
 
 
     const DashboardCard = ({title, amount, color = "rgba(243,203,69)"}) => (
-        <Card sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
+        <Card sx={{height: '90px', width: '180px', display: 'flex', flexDirection: 'column'}}>
             <CardContent sx={{flexGrow: 1}}>
-                <Typography sx={{fontFamily: 'Inter', fontSize: 20, whiteSpace: 'nowrap'}} color="black" gutterBottom>
+                <Typography variant={'h4'}
+                            sx={{fontFamily: 'Inter', fontSize: 18, fontWeight: '570', whiteSpace: 'nowrap'}}
+                            color="black"
+                            gutterBottom>
                     {title}
                 </Typography>
-                {loading && (
-                    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100}}>
-                        0 ₹
-                    </Box>
-                )}
+                {/*{loading && (*/}
+                {/*    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100}}>*/}
+                {/*        0 ₹*/}
+                {/*    </Box>*/}
+                {/*)}*/}
                 {error && (
                     <Alert severity={'error'} sx={{mt: 2}}>
                         Error fetching data: {error}
@@ -158,7 +160,8 @@ function DashBoard() {
                 )}
                 {
                     !loading && !error && (
-                        <Typography variant={'h4'} component={'div'} sx={{fontWeight: 'bold', color: color}}>
+                        <Typography variant={'h5'} component={'div'}
+                                    sx={{fontFamily: 'Inter', fontSize: 22, fontWeight: '550', color: color}}>
                             {amount.toLocaleString("en-IN")} ₹
                         </Typography>
                     )
@@ -170,20 +173,20 @@ function DashBoard() {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box sx={{width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', mt: 0}}>
-                <Typography sx={{
-                    position: 'fixed',
-                    top: 30,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: '#fff',
-                    zIndex: 1000,
-                    fontWeight: 'bold',
-                    fontSize: 34,
-                    textAlign: 'center',
-                    width: '100%',
-                }}>
-                    Dashboard
-                </Typography>
+                {/*<Typography sx={{*/}
+                {/*    position: 'fixed',*/}
+                {/*    top: 17,*/}
+                {/*    left: 50,*/}
+                {/*    right: 0,*/}
+                {/*    backgroundColor: '#fff',*/}
+                {/*    zIndex: 1000,*/}
+                {/*    fontWeight: 'bold',*/}
+                {/*    fontSize: 34,*/}
+                {/*    textAlign: 'left',*/}
+                {/*    width: '100%',*/}
+                {/*}}>*/}
+                {/*    Dashboard*/}
+                {/*</Typography>*/}
 
                 <ThemeProvider theme={theme}>
                     <Box sx={{position: 'fixed', top: 87, right: 32}}>
@@ -201,6 +204,14 @@ function DashBoard() {
                                         width: 180,
                                         '& .MuiInputLabel-root.Mui-focused': {
                                             color: 'black',
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'rgba(223, 168, 18, 0.69) !important',
+                                            },
+                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'rgba(223, 168, 18, 0.69) !important',
+                                            }
                                         }
                                     }
                                 },
@@ -274,10 +285,10 @@ function DashBoard() {
                 </ThemeProvider>
 
                 <Container maxWidth="lg" sx={{flex: 1, mb: 4}}>
-                    <Typography variant={'h6'} sx={{
+                    <Typography sx={{
                         textAlign: 'center',
                         mb: 2,
-                        color: 'text.secondary',
+                        color: 'grey',
                         fontWeight: 'medium',
                         fontFamily: "Inter"
                     }}>
