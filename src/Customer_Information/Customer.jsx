@@ -39,75 +39,75 @@ export default function Customer() {
         }
     };
 
-    const createCustomerServices = async (customerId) => {
-        const services = customerData.services.map(async (serviceId) => {
-            const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
-            const online_Amount = Number(customerData.paymentMethod.online) || 0;
-            const totalAmount = cash_Amount + online_Amount;
-
-            let paymentMethodMode = "cash";
-            if (cash_Amount > 0 && online_Amount > 0) {
-                paymentMethodMode = "both";
-            } else if (online_Amount > 0) {
-                paymentMethodMode = "online";
-            }
-
-            //CustomerServiceDTO Object
-            const customerServiceData = {
-                customerId: customerId,
-                serviceId: serviceId,
-                employeeId: Number(customerData.employeeName),
-                paymentMethod: paymentMethodMode,
-                // amount: totalAmount / customerData.services.length,
-                // cashAmount: cash_Amount / customerData.services.length,
-                // onlineAmount: online_Amount / customerData.services.length,
-                amount: totalAmount,
-                cashAmount: cash_Amount,
-                onlineAmount: online_Amount,
-                serviceTakenDate: new Date().toISOString(),
-            };
-            console.log("Sending customer service data: ", customerServiceData);
-            console.log("Cash Amount: ", cash_Amount);
-            console.log("Online Amount: ", online_Amount);
-            console.log("Total Amount: ", totalAmount);
-            console.log("Payment Method Object: ", customerData.paymentMethod);
-
-            const sendResponseToBackend = await fetch("/customer-service", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(customerServiceData),
-            });
-
-            const responseText = await sendResponseToBackend.text();
-            console.log("Full Response: ", responseText);
-
-            if (!sendResponseToBackend.ok) {
-                console.error("Service Creation Error: ", responseText);
-                throw new Error(
-                    `Service creation failed: ${sendResponseToBackend.status}`
-                );
-            }
-
-            return JSON.parse(responseText);
-        });
-
-        return Promise.all(services);
-    };
+    // const createCustomerServices = async (customerId) => {
+    //     const services = customerData.services.map(async (serviceId) => {
+    //         const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
+    //         const online_Amount = Number(customerData.paymentMethod.online) || 0;
+    //         const totalAmount = cash_Amount + online_Amount;
+    //
+    //         let paymentMethodMode = "cash";
+    //         if (cash_Amount > 0 && online_Amount > 0) {
+    //             paymentMethodMode = "both";
+    //         } else if (online_Amount > 0) {
+    //             paymentMethodMode = "online";
+    //         }
+    //
+    //         //CustomerServiceDTO Object
+    //         const customerServiceData = {
+    //             customerId: customerId,
+    //             serviceId: serviceId,
+    //             employeeId: Number(customerData.employeeName),
+    //             paymentMethod: paymentMethodMode,
+    //             // amount: totalAmount / customerData.services.length,
+    //             // cashAmount: cash_Amount / customerData.services.length,
+    //             // onlineAmount: online_Amount / customerData.services.length,
+    //             amount: totalAmount,
+    //             cashAmount: cash_Amount,
+    //             onlineAmount: online_Amount,
+    //             serviceTakenDate: new Date().toISOString(),
+    //         };
+    //         console.log("Sending customer service data: ", customerServiceData);
+    //         console.log("Cash Amount: ", cash_Amount);
+    //         console.log("Online Amount: ", online_Amount);
+    //         console.log("Total Amount: ", totalAmount);
+    //         console.log("Payment Method Object: ", customerData.paymentMethod);
+    //
+    //         const sendResponseToBackend = await fetch("/customer-service", {
+    //             method: "POST",
+    //             headers: {"Content-Type": "application/json"},
+    //             body: JSON.stringify(customerServiceData),
+    //         });
+    //
+    //         const responseText = await sendResponseToBackend.text();
+    //         console.log("Full Response: ", responseText);
+    //
+    //         if (!sendResponseToBackend.ok) {
+    //             console.error("Service Creation Error: ", responseText);
+    //             throw new Error(
+    //                 `Service creation failed: ${sendResponseToBackend.status}`
+    //             );
+    //         }
+    //
+    //         return JSON.parse(responseText);
+    //     });
+    //
+    //     return Promise.all(services);
+    // };
 
     const validateForm = () => {
         const errors = {};
 
-        if (!customerData.customerName) {
-            errors.customerName = "Customer name is required";
-        }
+        // if (!customerData.customerName) {
+        //     errors.customerName = "Customer name is required";
+        // }
 
-        if (!customerData.mobileNumber) {
-            errors.mobileNumber = "Mobile number is required";
-        }
+        // if (!customerData.mobileNumber) {
+        //     errors.mobileNumber = "Mobile number is required";
+        // }
 
-        if (!customerData.gender) {
-            errors.gender = "Gender is required";
-        }
+        // if (!customerData.gender) {
+        //     errors.gender = "Gender is required";
+        // }
 
         if (!customerData.services.length) {
             errors.services = "At least one service should be selected";
@@ -147,7 +147,7 @@ export default function Customer() {
         console.log("Customer Data: ", customerData);
 
         try {
-            const response = await fetch("/api/customer/create", {
+            const customerResponse = await fetch("/api/customer/create", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -157,28 +157,47 @@ export default function Customer() {
                 }),
             });
 
-            const contentType = response.headers.get("Content-Type");
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Error response: ", errorText);
-                console.error("Status: ", response.status);
-                console.error("Content-Type: ", contentType);
-                throw new Error(`Customer creation failed: ${response.status}`);
+            if (!customerResponse.ok) {
+                const errorText = await customerResponse.text();
+                throw new Error(`Customer creation failed: ${errorText}`);
             }
 
-            if (!contentType || !contentType.includes("application/json")) {
-                const text = await response.text();
-                console.error("Response is not JSON: ", text);
-                throw new Error("Response is not JSON");
-            }
-
-            //Get the id of the created customer
-            const createdCustomer = await response.json();
+            const createdCustomer = await customerResponse.json();
             const customerId = createdCustomer.customerId;
 
-            //Create customer service record
-            await createCustomerServices(customerId);
+            const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
+            const online_Amount = Number(customerData.paymentMethod.online) || 0;
+            const totalAmount = cash_Amount + online_Amount;
+
+            let paymentMethodMode = "cash";
+            if (cash_Amount > 0 && online_Amount > 0) {
+                paymentMethodMode = "both";
+            } else if (online_Amount > 0) {
+                paymentMethodMode = "online";
+            }
+
+            const customerServiceData = {
+                customerId: customerId,
+                serviceIds: customerData.services,
+                employeeId: Number(customerData.employeeName),
+                paymentMethod: paymentMethodMode,
+                amount: totalAmount,
+                cashAmount: cash_Amount,
+                onlineAmount: online_Amount,
+                serviceTakenDate: new Date().toISOString(),
+            };
+
+            const serviceResponse = await fetch("/customer-service", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(customerServiceData)
+            });
+
+            if (!serviceResponse.ok) {
+                const errorText = await serviceResponse.text();
+                throw new Error(`Service creation failed: ${errorText}`);
+            }
+
 
             // alert("Data saved successfully");
 
@@ -190,7 +209,7 @@ export default function Customer() {
                 employeeName: "",
                 paymentMethod: {cash: null, online: null, type: "cash"},
             });
-            // setSubmitted(true);
+
             setNotification({
                 open: true,
                 message: "Customer information saved successfully",
@@ -198,13 +217,12 @@ export default function Customer() {
             });
         } catch (error) {
             console.error("Error saving data: ", error);
-            // setError(error.message);
+
             setNotification({
                 open: true,
                 message: error.message || "Failed to save customer information",
                 severity: "error",
             });
-            // alert("Error saving data");
         } finally {
             setIsLoading(false);
         }
