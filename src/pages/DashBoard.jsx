@@ -189,7 +189,7 @@ function DashBoard() {
                 {/*</Typography>*/}
 
                 <ThemeProvider theme={theme}>
-                    <Box sx={{position: 'fixed', top: 37, right: 32}}>
+                    <Box sx={{position: 'fixed', top: 25, right: 32}}>
                         <DatePicker
                             label={"Select Date"}
                             value={selectedDate}
@@ -289,7 +289,7 @@ function DashBoard() {
                         position: 'relative',
                         textAlign: 'center',
                         mb: 2,
-                        top: '-50px',
+                        top: '-60px',
                         color: 'grey',
                         fontWeight: 'medium',
                         fontFamily: "Inter"
@@ -301,7 +301,7 @@ function DashBoard() {
                     })}
                     </Typography>
 
-                    <Grid container spacing={3} sx={{position: 'relative', top: '-20px'}}>
+                    <Grid container spacing={3} sx={{position: 'relative', top: '-30px'}}>
                         <Grid size={{xs: "100%", md: "33.33%", lg: "25%"}}>
                             <DashboardCard title={'Total Business'} amount={totalBusiness} color={'rgba(243,203,69)'}/>
                         </Grid>
