@@ -109,9 +109,9 @@ export default function Customer() {
         //     errors.gender = "Gender is required";
         // }
 
-        if (!customerData.services.length) {
-            errors.services = "At least one service should be selected";
-        }
+        // if (!customerData.services.length) {
+        //     errors.services = "At least one service should be selected";
+        // }
 
         if (!customerData.employeeName) {
             errors.employeeName = "Please select an employee";
