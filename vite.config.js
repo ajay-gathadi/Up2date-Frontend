@@ -44,20 +44,10 @@ export default ({mode}) => {
                     changeOrigin: true,
                 },
 
-                "/dashboard/total-business-forDate": {
+                "/dashboard": {
                     target: baseUrl,
                     changeOrigin: true,
                 },
-
-                "/dashboard/cash-collected-forDate": {
-                    target: baseUrl,
-                    changeOrigin: true,
-                },
-
-                "/dashboard/online-collected-forDate": {
-                    target: baseUrl,
-                    changeOrigin: true,
-                }
             },
         },
         appType: 'spa',
