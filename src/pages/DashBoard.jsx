@@ -35,6 +35,14 @@ function DashBoard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [summaryData, setSummaryData] = useState(({
+        totalBusiness: 0,
+        cashCollected: 0,
+        onlineCollected: 0,
+        totalProfit: 0,
+    }));
+
+    console.log("Log 1: Dashboard component is starting to render");
 
     const fetchTotalBusiness = async (date) => {
         try {
@@ -109,7 +117,6 @@ function DashBoard() {
         }
     };
 
-
     const fetchAllData = async (date) => {
         try {
             setLoading(true);
@@ -128,48 +135,75 @@ function DashBoard() {
     };
 
     useEffect(() => {
-        fetchAllData(selectedDate)
-    }, []);
+        const fetchDashboardSummary = async () => {
+            try {
+                const formattedDate = selectedDate.toISOString().split("T")[0];
+                const response = await fetch(`/dashboard/summary?date=${formattedDate}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setSummaryData((data));
+                } else {
+                    console.error("Failed to get dashboard summary:", response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error("Error fetching dashboard summary:", error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchDashboardSummary();
+    }, [selectedDate]);
 
     const handleDateChange = (newDate) => {
         if (newDate && newDate instanceof Date && !isNaN(newDate)) {
             setSelectedDate(newDate);
-            fetchAllData(newDate);
         }
+    }
+
+    console.log("Log 2: Dashboard component has finished rendering");
+    if (loading) {
+        console.log("Log 4: Component is loading state...");
     }
 
 
     const DashboardCard = ({title, amount, color = "rgba(243,203,69)"}) => (
-        <Card sx={{height: '90px', width: '180px', display: 'flex', flexDirection: 'column'}}>
-            <CardContent sx={{flexGrow: 1}}>
-                <Typography variant={'h4'}
-                            sx={{fontFamily: 'Inter', fontSize: 18, fontWeight: '570', whiteSpace: 'nowrap'}}
-                            color="black"
-                            gutterBottom>
-                    {title}
-                </Typography>
-                {/*{loading && (*/}
-                {/*    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100}}>*/}
-                {/*        0 ₹*/}
-                {/*    </Box>*/}
-                {/*)}*/}
-                {error && (
-                    <Alert severity={'error'} sx={{mt: 2}}>
-                        Error fetching data: {error}
-                    </Alert>
-                )}
-                {
-                    !loading && !error && (
-                        <Typography variant={'h5'} component={'div'}
-                                    sx={{fontFamily: 'Inter', fontSize: 22, fontWeight: '550', color: color}}>
-                            {amount.toLocaleString("en-IN")} ₹
-                        </Typography>
-                    )
-                }
-            </CardContent>
-        </Card>
+        <>
+            <Card sx={{height: '90px', width: '180px', display: 'flex', flexDirection: 'column'}}>
+                <CardContent sx={{flexGrow: 1}}>
+                    <Typography variant={'h4'}
+                                sx={{fontFamily: 'Inter', fontSize: 18, fontWeight: '570', whiteSpace: 'nowrap'}}
+                                color="black"
+                                gutterBottom>
+                        {title}
+                    </Typography>
+                    {error && (
+                        <Alert severity={'error'} sx={{mt: 2}}>
+                            Error fetching data: {error}
+                        </Alert>
+                    )}
+                    {
+                        !loading && !error && (
+                            <Typography variant={'h5'} component={'div'}
+                                        sx={{fontFamily: 'Inter', fontSize: 22, fontWeight: '550', color: color}}>
+                                {amount.toLocaleString("en-IN")} ₹
+                            </Typography>
+                        )
+                    }
+                </CardContent>
+            </Card>
+        </>
     );
 
+    console.log("Log 2: Dashboard component has finished rendering");
+    if (error) {
+        console.error("Log 3: An error occurred in the Dashboard component:", error);
+    }
+
+    if (loading) {
+        console.log("Log 4: Component is loading state...");
+    }
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box sx={{width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', mt: 0}}>
@@ -302,17 +336,27 @@ function DashBoard() {
                     </Typography>
 
                     <Grid container spacing={3} sx={{position: 'relative', top: '-30px'}}>
-                        <Grid size={{xs: "100%", md: "33.33%", lg: "25%"}}>
-                            <DashboardCard title={'Total Business'} amount={totalBusiness} color={'rgba(243,203,69)'}/>
-                        </Grid>
-
-                        <Grid size={{xs: 12, md: 4, lg: 4}}>
-                            <DashboardCard title={'Cash Collected'} amount={cashCollected} color={'rgba(243,203,69)'}/>
-                        </Grid>
-
-                        <Grid size={{xs: 12, md: 4, lg: 4}}>
-                            <DashboardCard title={'Online Collected'} amount={onlineCollected}
+                        <Grid item xs={12} sm={6} md={3} lg={4}>
+                            <DashboardCard title={'Total Business'} amount={summaryData.totalBusiness}
                                            color={'rgba(243,203,69)'}/>
+                        </Grid>
+
+
+                        <Grid item xs={12} sm={6} md={3} lg={4}>
+                            <DashboardCard title={'Cash Collected'} amount={summaryData.cashCollected}
+                                           color={'rgba(243,203,69)'}/>
+                        </Grid>
+
+
+                        <Grid item xs={12} sm={6} md={3} lg={4}>
+                            <DashboardCard title={'Online Collected'} amount={summaryData.onlineCollected}
+                                           color={'rgba(243,203,69)'}/>
+                        </Grid>
+
+                        
+                        <Grid item xs={12} sm={6} md={3} lg={4}>
+                            <DashboardCard title={'Total Profit'} amount={summaryData.totalProfit}
+                                           color={`rgba(243, 203, 69)`}/>
                         </Grid>
                     </Grid>
                 </Container>
