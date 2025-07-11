@@ -44,7 +44,7 @@ export default ({mode}) => {
                     changeOrigin: true,
                 },
 
-                "/dashboard": {
+                "/dashboard/summary": {
                     target: baseUrl,
                     changeOrigin: true,
                 },
