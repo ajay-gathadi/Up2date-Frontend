@@ -5,6 +5,7 @@ import App from './App.jsx'
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import Customer from "./Customer_Information/Customer";
 import Dashboard from "./pages/DashBoard";
+import Reports from "./pages/Reports";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard",
                 element: <Dashboard/>,
+            },
+            {
+                path: '/reports',
+                element: <Reports/>
             }
         ]
     }
