@@ -48,6 +48,11 @@ export default ({mode}) => {
                     target: baseUrl,
                     changeOrigin: true,
                 },
+
+                "/dashboard/employee-commissions": {
+                    target: baseUrl,
+                    changeOrigin: true,
+                }
             },
         },
         appType: 'spa',
