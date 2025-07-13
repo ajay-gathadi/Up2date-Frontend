@@ -15,30 +15,35 @@ function App() {
 
     return (
 
-        <Box sx={{display: "flex", minHeight: "100vh", width: "100%"}}>
+        <Box sx={{
+            display: "flex", minHeight: "100vh",
+            // width: "100%"
+        }}>
             <CssBaseline/>
 
-            <IconButton
-                color="inherit"
-                edge="start"
-                onClick={handleDrawerToggle}
-                disableRipple
-                disableFocusRipple
-                sx={{
-                    position: 'fixed',
-                    top: 20,
-                    left: 25,
-                    color: 'black',
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    outline: 'none !important',
+            <Box sx={{width: {sm: 60}, flexShrink: {sm: 0}, p: 2}}>
+                <IconButton
+                    color="inherit"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    disableRipple
+                    disableFocusRipple
+                    sx={{
+                        position: 'fixed',
+                        top: 20,
+                        left: 25,
+                        color: 'black',
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                        outline: 'none !important',
 
-                    '&:hover': {
-                        backgroundColor: 'rgba(243,203,69, 0.4)',
-                    }
-                }}
-            >
-                <MenuIcon sx={{color: 'black'}}/>
-            </IconButton>
+                        '&:hover': {
+                            backgroundColor: 'rgba(243,203,69, 0.4)',
+                        }
+                    }}
+                >
+                    <MenuIcon sx={{color: 'black'}}/>
+                </IconButton>
+            </Box>
 
             <Drawer
                 variant="temporary"
@@ -64,9 +69,8 @@ function App() {
                 component='main'
                 sx={{
                     flexGrow: 1,
-                    p: 3,
-                    pt: 7.5,
-
+                    p: 1,
+                    width: {sm: `calc(100% - 60px)`},
                 }}
             >
                 <Outlet/>
