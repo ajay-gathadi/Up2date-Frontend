@@ -1,4 +1,4 @@
-import {Dashboard, People} from "@mui/icons-material";
+import {Assessment, Dashboard, People} from "@mui/icons-material";
 import {Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText,} from "@mui/material";
 import {Link} from "react-router-dom";
 
@@ -14,6 +14,11 @@ const AppDrawer = ({open, onClose}) => {
             icon: <Dashboard/>,
             path: "/dashboard"
         },
+        {
+            text: "Reports",
+            icon: <Assessment/>,
+            path: "/reports"
+        }
     ];
 
     return (
