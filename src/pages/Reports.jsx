@@ -89,9 +89,9 @@ function Reports() {
         }
 
         if (activeTab === 0) {
-            fetchEmployeeCommission();
-        } else if (activeTab === 1) {
             fetchCustomerSummary();
+        } else if (activeTab === 1) {
+            fetchEmployeeCommission();
         }
     }, [dateRange, activeTab]);
 
@@ -112,11 +112,11 @@ function Reports() {
 
                 <Box sx={{width: '100%', mt: 1}}>
                     <Tabs value={activeTab} onChange={handleTabChange} centered={true}>
-                        <Tab label={'Employee Commission'}
+                        <Tab label={'Customer Details'}
                              sx={{
                                  outline: 'none !important',
                              }}/>
-                        <Tab label={'Customer Details'}
+                        <Tab label={'Employee Commission'}
                              sx={{
                                  outline: 'none !important',
                              }}/>
@@ -126,35 +126,6 @@ function Reports() {
                 {error && <Alert severity={'error'} sx={{mt: 1}}>{error}</Alert>}
 
                 {activeTab === 0 && (
-                    <Box sx={{p: 1}}>
-                        {loading ? (
-                            <Typography>Loading...</Typography>
-                        ) : (
-                            <TableContainer component={Paper} sx={{mt: 1}}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Commission Amount</TableCell>
-                                            {/*<TableCell>Date</TableCell>*/}
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {employeeCommissionData.map((row) => (
-                                            <TableRow key={row.employeeName}>
-                                                <TableCell>{row.employeeName}</TableCell>
-                                                <TableCell>{row.totalCommission}</TableCell>
-                                                {/*<TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>*/}
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        )}
-                    </Box>
-                )}
-
-                {activeTab === 1 && (
                     <Box sx={{p: 1}}>
                         {loading &&
                             <Box sx={{display: 'flex', justifyContent: 'center', my: 3}}><CircularProgress/></Box>
@@ -211,6 +182,37 @@ function Reports() {
                         )}
                     </Box>
                 )}
+
+                {activeTab === 1 && (
+                    <Box sx={{p: 1}}>
+                        {loading ? (
+                            <Typography>Loading...</Typography>
+                        ) : (
+                            <TableContainer component={Paper} sx={{mt: 1}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Commission Amount</TableCell>
+                                            {/*<TableCell>Date</TableCell>*/}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {employeeCommissionData.map((row) => (
+                                            <TableRow key={row.employeeName}>
+                                                <TableCell>{row.employeeName}</TableCell>
+                                                <TableCell>{row.totalCommission}</TableCell>
+                                                {/*<TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>*/}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )}
+                    </Box>
+                )}
+
+
             </Box>
         </LocalizationProvider>
     );
