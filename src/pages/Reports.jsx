@@ -5,6 +5,7 @@ import {DateRangePicker} from "@mui/x-date-pickers-pro/DateRangePicker";
 import {
     Alert,
     Box,
+    CircularProgress,
     Paper,
     Tab,
     Table,
@@ -16,11 +17,13 @@ import {
     Tabs,
     Typography
 } from "@mui/material";
+import {format} from "date-fns";
 
 function Reports() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [employeeCommissionData, setEmployeeCommissionData] = useState([]);
+    const [customerSummaryData, setCustomerSummaryData] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
     const [dateRange, setDateRange] = useState([null, null]);
 
@@ -29,12 +32,19 @@ function Reports() {
     };
 
     useEffect(() => {
+
+        if (!dateRange[0] || !dateRange[1]) {
+            return;
+        }
+
+        const startDate = format(dateRange[0], 'yyyy-MM-dd');
+        const endDate = format(dateRange[1], 'yyyy-MM-dd');
+
         const fetchEmployeeCommission = async () => {
             if (activeTab === 0 && dateRange[0] && dateRange[1]) {
                 setLoading(true);
                 try {
-                    const startDate = dateRange[0].toISOString().split('T')[0];
-                    const endDate = dateRange[1].toISOString().split('T')[0];
+
                     const response = await fetch(`/dashboard/employee-commissions?startDate=${startDate}&endDate=${endDate}`);
 
                     if (response.ok) {
@@ -55,7 +65,34 @@ function Reports() {
             }
         };
 
-        fetchEmployeeCommission();
+        const fetchCustomerSummary = async () => {
+            setLoading(true);
+            setCustomerSummaryData([]);
+            setError(null);
+
+            try {
+                const response = await fetch(`/dashboard/customer-summary?startDate=${startDate}&endDate=${endDate}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setCustomerSummaryData(data);
+                    setError(null);
+                } else {
+                    const errorText = await response.text();
+                    console.error("Failed to fetch customer summary data:", response.status, errorText);
+                    setError(`Server responded with status ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                setError('An error occurred while fetching customer summary data: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (activeTab === 0) {
+            fetchEmployeeCommission();
+        } else if (activeTab === 1) {
+            fetchCustomerSummary();
+        }
     }, [dateRange, activeTab]);
 
     return (
@@ -97,8 +134,8 @@ function Reports() {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Employee Name</TableCell>
-                                            <TableCell>Commission Amount</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Commission Amount</TableCell>
                                             {/*<TableCell>Date</TableCell>*/}
                                         </TableRow>
                                     </TableHead>
@@ -114,10 +151,63 @@ function Reports() {
                                 </Table>
                             </TableContainer>
                         )}
-                        {activeTab === 1 && (
-                            <Box sx={{p: 1}}>
-                                <Typography>Customer Details</Typography>
-                            </Box>
+                    </Box>
+                )}
+
+                {activeTab === 1 && (
+                    <Box sx={{p: 1}}>
+                        {loading &&
+                            <Box sx={{display: 'flex', justifyContent: 'center', my: 3}}><CircularProgress/></Box>
+                        }
+                        {error && <Alert severity={'error'} sx={{mt: 2}}>{error}</Alert>}
+                        {!loading && !error && dateRange[0] && dateRange[1] && (
+                            <TableContainer component={Paper} sx={{mt: 1}}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Total Visits</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Services Taken</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Last Visit Date</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {customerSummaryData.length > 0 ? (
+                                            customerSummaryData.map((currentCustomer, currentIndex) => (
+                                                <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
+                                                    <TableCell>{currentCustomer.customerName}</TableCell>
+                                                    <TableCell>{currentCustomer.mobileNumber}</TableCell>
+                                                    <TableCell>{currentCustomer.totalVisits}</TableCell>
+                                                    <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
+                                                    <TableCell
+                                                        sx={{
+                                                            maxWidth: '200px',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            whiteSpace: 'nowrap'
+                                                        }}
+                                                        title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
+                                                    >
+                                                        {Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || 'N/A'}
+                                                    </TableCell>
+                                                    <TableCell>{new Date(currentCustomer.lastVisitDate).toLocaleDateString('en-IN')}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={6} align="center">
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        No customer data available for the selected date range.
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
                         )}
                     </Box>
                 )}
