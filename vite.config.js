@@ -52,7 +52,12 @@ export default ({mode}) => {
                 "/dashboard/employee-commissions": {
                     target: baseUrl,
                     changeOrigin: true,
-                }
+                },
+
+                "/dashboard/customer-summary": {
+                    target: baseUrl,
+                    changeOrigin: true,
+                },
             },
         },
         appType: 'spa',
