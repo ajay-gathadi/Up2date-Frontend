@@ -41,28 +41,29 @@ function Reports() {
         const endDate = format(dateRange[1], 'yyyy-MM-dd');
 
         const fetchEmployeeCommission = async () => {
-            if (activeTab === 0 && dateRange[0] && dateRange[1]) {
-                setLoading(true);
-                try {
+            setLoading(true);
+            setError(null);
+            setEmployeeCommissionData([]);
+            try {
 
-                    const response = await fetch(`/dashboard/employee-commissions?startDate=${startDate}&endDate=${endDate}`);
+                const response = await fetch(`/dashboard/employee-commissions?startDate=${startDate}&endDate=${endDate}`);
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        setEmployeeCommissionData(data);
-                        setError(null);
-                    } else {
-                        const errorText = await response.text();
-                        console.error("Failed to fetch employee commission data:", response.status, errorText);
-                        setError(`Server responded with status ${response.status}: ${errorText}`);
-                    }
-                } catch (error) {
-                    console.error("Error fetching employee commission data:", error);
-                    setError(error.message);
-                } finally {
-                    setLoading(false);
+                if (response.ok) {
+                    const data = await response.json();
+                    setEmployeeCommissionData(data);
+                    setError(null);
+                } else {
+                    const errorText = await response.text();
+                    console.error("Failed to fetch employee commission data:", response.status, errorText);
+                    setError(`Server responded with status ${response.status}: ${errorText}`);
                 }
+            } catch (error) {
+                console.error("Error fetching employee commission data:", error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
             }
+
         };
 
         const fetchCustomerSummary = async () => {
@@ -155,9 +156,7 @@ function Reports() {
                                                     <TableCell
                                                         sx={{
                                                             maxWidth: '200px',
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            whiteSpace: 'nowrap'
+                                                            wordBreak: 'break-word',
                                                         }}
                                                         title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
                                                     >
