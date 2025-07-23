@@ -1,31 +1,23 @@
-import {Alert, Box, Card, CardContent, Container, Grid, Tab, Tabs, Typography} from "@mui/material";
+import {
+    Alert,
+    Box,
+    Card,
+    CardContent,
+    Container,
+    Grid,
+    Paper,
+    Tab,
+    Table,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tabs,
+    Typography
+} from "@mui/material";
 import {useEffect, useState} from "react";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-
-// const theme = createTheme({
-//     palette: {
-//         primary: {
-//             main: 'rgba(223, 168, 18, 0.69)',
-//         }
-//     },
-//     components: {
-//         MuiTextField: {
-//             styleOverrides: {
-//                 root: {
-//                     '& .MuiOutlinedInput-root': {
-//                         '&:hover fieldset': {
-//                             borderColor: 'rgba(223, 168, 18, 0.69) !important',
-//                         },
-//                         '&.Mui-focused fieldset': {
-//                             borderColor: 'rgba(223, 168, 18, 0.69) !important',
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// });
 
 const DashboardCard = ({title, amount, color = "rgba(243,203,69)"}) => (
     <>
@@ -66,6 +58,7 @@ function DashBoard() {
     const [activeTab, setActiveTab] = useState(0);
     const [employeeCommissionData, setEmployeeCommissionData] = useState([]);
     const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+    const [customerDetailsData, setCustomerDetailsData] = useState([]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
@@ -76,12 +69,21 @@ function DashBoard() {
             try {
                 const formattedDate = selectedDate.toISOString().split("T")[0];
                 const response = await fetch(`/dashboard/summary?date=${formattedDate}`);
+                const customerDetailsResponse = await fetch(`/dashboard/customer-details-for-date?date=${formattedDate}`)
 
                 if (response.ok) {
                     const data = await response.json();
                     setSummaryData((data));
                 } else {
                     console.error("Failed to get dashboard summary:", response.status, response.statusText);
+                }
+
+                if (customerDetailsResponse.ok) {
+                    const customerData = await customerDetailsResponse.json();
+                    console.log("Customer Details Data:", customerData);
+                    setCustomerDetailsData(customerData);
+                } else {
+                    console.error("Failed to get customer details:", customerDetailsResponse.status, customerDetailsResponse.statusText);
                 }
             } catch (error) {
                 console.error("Error fetching dashboard summary:", error);
@@ -92,6 +94,7 @@ function DashBoard() {
         }
         fetchDashboardSummary();
     }, [selectedDate]);
+
 
     const handleDateChange = (newDate) => {
         if (newDate && newDate instanceof Date && !isNaN(newDate)) {
@@ -287,13 +290,23 @@ function DashBoard() {
 
                                     {activeTab === 0 && (
                                         <Box sx={{p: 2}}>
-                                            <Typography>Employee Commission Table</Typography>
+                                            <TableContainer component={Paper}>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Employee Name</TableCell>
+                                                            <TableCell>Total Commission</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                </Table>
+                                            </TableContainer>
                                         </Box>
+
                                     )}
 
                                     {activeTab === 1 && (
                                         <Box sx={{p: 2}}>
-                                            <Typography>Customer Details Table</Typography>
+                                            <Typography>Employee Commission Table</Typography>
                                         </Box>
                                     )}
                                 </Box>
