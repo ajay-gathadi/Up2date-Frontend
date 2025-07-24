@@ -8,6 +8,7 @@ import {
     Paper,
     Tab,
     Table,
+    TableBody,
     TableCell,
     TableContainer,
     TableHead,
@@ -38,7 +39,7 @@ const DashboardCard = ({title, amount, color = "rgba(243,203,69)"}) => (
                                 fontWeight: '550', color: color
                             }}
                 >
-                    {amount.toLocaleString("en-IN")} ₹
+                    ₹ {amount.toLocaleString("en-IN")}
                 </Typography>
             </CardContent>
         </Card>
@@ -69,7 +70,7 @@ function DashBoard() {
             try {
                 const formattedDate = selectedDate.toISOString().split("T")[0];
                 const response = await fetch(`/dashboard/summary?date=${formattedDate}`);
-                const customerDetailsResponse = await fetch(`/dashboard/customer-details-for-date?date=${formattedDate}`)
+                const customerDetailsResponse = await fetch(`/dashboard/customer-details-for-date?date=${formattedDate}`);
 
                 if (response.ok) {
                     const data = await response.json();
@@ -276,14 +277,14 @@ function DashBoard() {
                                     <Tabs value={activeTab} onChange={handleTabChange} centered={true}
                                           indicatorColor={'primary'}
                                           textColor={'primary'}>
-                                        <Tab label="Employee Commission"
-                                             sx={{
-                                                 outline: 'none !important',
-                                             }}
-                                        />
                                         <Tab label={'Customer Details'}
                                              sx={{
                                                  outline: 'none !important'
+                                             }}
+                                        />
+                                        <Tab label="Employee Commission"
+                                             sx={{
+                                                 outline: 'none !important',
                                              }}
                                         />
                                     </Tabs>
@@ -294,10 +295,34 @@ function DashBoard() {
                                                 <Table>
                                                     <TableHead>
                                                         <TableRow>
-                                                            <TableCell>Employee Name</TableCell>
-                                                            <TableCell>Total Commission</TableCell>
+                                                            <TableCell>Customer Name</TableCell>
+                                                            <TableCell>Mobile Number</TableCell>
+                                                            <TableCell>Services</TableCell>
+                                                            <TableCell>Employee</TableCell>
+                                                            <TableCell>Total Amount</TableCell>
                                                         </TableRow>
                                                     </TableHead>
+                                                    <TableBody>
+                                                        {customerDetailsData.length > 0 ? (
+                                                            customerDetailsData.map((currentCustomer, currentIndex) => (
+                                                                <TableRow key={currentIndex}>
+                                                                    <TableCell>{currentCustomer.customerName}</TableCell>
+                                                                    <TableCell>{currentCustomer.mobileNumber}</TableCell>
+                                                                    <TableCell sx={{
+                                                                        maxWidth: '200px',
+                                                                        wordBreak: 'break-word'
+                                                                    }}>{currentCustomer.services}</TableCell>
+                                                                    <TableCell>{currentCustomer.employeeName}</TableCell>
+                                                                    <TableCell>₹{currentCustomer.totalAmount}</TableCell>
+                                                                </TableRow>
+                                                            ))
+                                                        ) : (
+                                                            <TableRow>
+                                                                <TableCell colSpan={5} sx={{textAlign: 'center'}}>No
+                                                                    customer data for this date</TableCell>
+                                                            </TableRow>
+                                                        )}
+                                                    </TableBody>
                                                 </Table>
                                             </TableContainer>
                                         </Box>
