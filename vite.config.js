@@ -64,7 +64,7 @@ export default ({mode}) => {
                     changeOrigin: true,
                 },
 
-                "/dashboard/employee-commission-for-date": {
+                "/dashboard/employee-commissions-for-date": {
                     target: baseUrl,
                     changeOrigin: true,
                 },
