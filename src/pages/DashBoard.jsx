@@ -58,7 +58,6 @@ function DashBoard() {
     }));
     const [activeTab, setActiveTab] = useState(0);
     const [employeeCommissionData, setEmployeeCommissionData] = useState([]);
-    const [dateRange, setDateRange] = useState([new Date(), new Date()]);
     const [customerDetailsData, setCustomerDetailsData] = useState([]);
 
     const handleTabChange = (event, newValue) => {
@@ -67,25 +66,35 @@ function DashBoard() {
 
     useEffect(() => {
         const fetchDashboardSummary = async () => {
+            if (!selectedDate) return;
+            setLoading(true);
+            setError(null);
+
+            const formattedDate = selectedDate.toISOString().split("T")[0];
+
             try {
-                const formattedDate = selectedDate.toISOString().split("T")[0];
-                const response = await fetch(`/dashboard/summary?date=${formattedDate}`);
-                const customerDetailsResponse = await fetch(`/dashboard/customer-details-for-date?date=${formattedDate}`);
+                const [summaryResponse, customerDetailsResponse, employeeCommissionResponse]
+                    = await Promise.all([
+                    fetch(`/dashboard/summary?date=${formattedDate}`),
+                    fetch(`/dashboard/customer-details-for-date?date=${formattedDate}`),
+                    fetch(`/dashboard/employee-commissions-for-date?date=${formattedDate}`)
+                ]);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setSummaryData((data));
-                } else {
-                    console.error("Failed to get dashboard summary:", response.status, response.statusText);
+                if (!summaryResponse.ok || !customerDetailsResponse.ok || !employeeCommissionResponse.ok) {
+                    throw new Error("Failed to get Dashboard data");
                 }
+                ;
 
-                if (customerDetailsResponse.ok) {
-                    const customerData = await customerDetailsResponse.json();
-                    console.log("Customer Details Data:", customerData);
-                    setCustomerDetailsData(customerData);
-                } else {
-                    console.error("Failed to get customer details:", customerDetailsResponse.status, customerDetailsResponse.statusText);
-                }
+                const [summary, customerDetails, employeeCommission]
+                    = await Promise.all([
+                    summaryResponse.json(),
+                    customerDetailsResponse.json(),
+                    employeeCommissionResponse.json()
+                ]);
+
+                setSummaryData(summary);
+                setCustomerDetailsData(customerDetails);
+                setEmployeeCommissionData(employeeCommission);
             } catch (error) {
                 console.error("Error fetching dashboard summary:", error);
                 setError(error.message);
@@ -331,7 +340,31 @@ function DashBoard() {
 
                                     {activeTab === 1 && (
                                         <Box sx={{p: 2}}>
-                                            <Typography>Employee Commission Table</Typography>
+                                            <TableContainer component={Paper}>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Employee Name</TableCell>
+                                                            <TableCell>Commission Amount</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {employeeCommissionData.length > 0 ? (
+                                                            employeeCommissionData.map((currentEmployee, currentIndex) => (
+                                                                <TableRow key={currentIndex}>
+                                                                    <TableCell>{currentEmployee.employeeName}</TableCell>
+                                                                    <TableCell>₹{currentEmployee.totalCommission}</TableCell>
+                                                                </TableRow>
+                                                            ))
+                                                        ) : (
+                                                            <TableRow>
+                                                                <TableCell colSpan={2} sx={{textAlign: 'center'}}>No
+                                                                    commission data for this date</TableCell>
+                                                            </TableRow>
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
                                         </Box>
                                     )}
                                 </Box>
