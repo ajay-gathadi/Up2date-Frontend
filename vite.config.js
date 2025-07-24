@@ -62,7 +62,12 @@ export default ({mode}) => {
                 "/dashboard/customer-details-for-date": {
                     target: baseUrl,
                     changeOrigin: true,
-                }
+                },
+
+                "/dashboard/employee-commission-for-date": {
+                    target: baseUrl,
+                    changeOrigin: true,
+                },
             },
         },
         appType: 'spa',
