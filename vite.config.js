@@ -58,6 +58,11 @@ export default ({mode}) => {
                     target: baseUrl,
                     changeOrigin: true,
                 },
+
+                "/dashboard/customer-details-for-date": {
+                    target: baseUrl,
+                    changeOrigin: true,
+                }
             },
         },
         appType: 'spa',
