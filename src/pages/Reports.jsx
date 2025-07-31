@@ -200,7 +200,7 @@ function Reports() {
                                         {employeeCommissionData.map((row) => (
                                             <TableRow key={row.employeeName}>
                                                 <TableCell>{row.employeeName}</TableCell>
-                                                <TableCell>{row.totalCommission}</TableCell>
+                                                <TableCell>₹{row.totalCommission}</TableCell>
                                                 {/*<TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>*/}
                                             </TableRow>
                                         ))}
