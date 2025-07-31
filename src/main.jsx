@@ -6,6 +6,7 @@ import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import Customer from "./Customer_Information/Customer";
 import Dashboard from "./pages/DashBoard";
 import Reports from "./pages/Reports";
+import EmployeeManagement from "./pages/EmployeeManagement";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             {
                 path: '/reports',
                 element: <Reports/>
+            },
+            {
+                path: '/employee-management',
+                element: <EmployeeManagement/>
             }
         ]
     }
