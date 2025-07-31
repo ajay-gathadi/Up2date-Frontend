@@ -19,16 +19,6 @@ export default ({mode}) => {
                     changeOrigin: true,
                 },
 
-                // "/customer": {
-                //     target: baseUrl,
-                //     changeOrigin: true,
-                // },
-
-                // "/customer/create": {
-                //     target: baseUrl,
-                //     changeOrigin: true,
-                // },
-
                 "/customer-service": {
                     target: baseUrl,
                     changeOrigin: true,
