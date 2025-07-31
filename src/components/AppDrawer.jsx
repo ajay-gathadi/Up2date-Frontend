@@ -1,5 +1,6 @@
 import {Assessment, Dashboard, People} from "@mui/icons-material";
 import {Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText,} from "@mui/material";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {Link} from "react-router-dom";
 
 const AppDrawer = ({open, onClose}) => {
@@ -18,6 +19,11 @@ const AppDrawer = ({open, onClose}) => {
             text: "Reports",
             icon: <Assessment/>,
             path: "/reports"
+        },
+        {
+            text: "Employee Management",
+            icon: <ManageAccountsIcon/>,
+            path: "/employee-management"
         }
     ];
 
