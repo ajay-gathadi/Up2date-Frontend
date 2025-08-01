@@ -37,7 +37,9 @@ const EmployeeManagement = () => {
         gender: '',
     })
     const [submitting, setSubmitting] = useState(false);
+
     const [editingEmployee, setEditingEmployee] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -117,6 +119,35 @@ const EmployeeManagement = () => {
         setOpenModal(true);
     }
 
+    const handleDeleteClick = (employee) => {
+        setDeleteTarget(employee);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteTarget) return;
+
+        try {
+            setSubmitting(true);
+            const response = await fetch(`/employees/${deleteTarget.employeeId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete employee');
+            }
+
+            setEmployees(employees.map(currentEmployee => currentEmployee.employeeId === deleteTarget.employeeId ? {
+                ...currentEmployee,
+                isWorking: false
+            } : currentEmployee));
+            setDeleteTarget(null);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
     if (loading) {
         return <Container sx={{display: 'flex', justifyContent: 'center', mt: 5}}><CircularProgress/></Container>
     }
@@ -155,7 +186,8 @@ const EmployeeManagement = () => {
                                     <TableCell align={'right'}>
                                         <IconButton size={'small'}
                                                     onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
-                                        <IconButton size={'small'} color={'error'}><PersonRemove/></IconButton>
+                                        <IconButton size={'small'} color={'error'}
+                                                    onClick={() => handleDeleteClick(currentEmployee)}><PersonRemove/></IconButton>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -197,7 +229,7 @@ const EmployeeManagement = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseModal}>
+                    <Button onClick={handleCloseModal} color={'black'}>
                         Cancel
                     </Button>
                     <Button
@@ -207,6 +239,22 @@ const EmployeeManagement = () => {
                     >
                         {submitting ?
                             <CircularProgress size={20}/> : (editingEmployee ? 'Save Changes' : 'Add Employee')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth={'xs'} fullWidth={true}>
+                <DialogTitle>Confirm Delete!</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to remove <strong>{deleteTarget?.employeeName}</strong>?
+                        This will mark them as inactive.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                    <Button onClick={handleDeleteConfirm} color={'error'} variant={'contained'} disabled={submitting}>
+                        {submitting ? <CircularProgress size={20} color={'inherit'}/> : 'Confirm Delete'}
                     </Button>
                 </DialogActions>
             </Dialog>
