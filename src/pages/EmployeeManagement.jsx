@@ -10,11 +10,13 @@ import {
     DialogContent,
     DialogTitle,
     FormControl,
+    FormControlLabel,
     IconButton,
     InputLabel,
     MenuItem,
     Paper,
     Select,
+    Switch,
     Table,
     TableBody,
     TableCell,
@@ -35,6 +37,7 @@ const EmployeeManagement = () => {
     const [formData, setFormData] = useState({
         name: '',
         gender: '',
+        isWorking: true,
     })
     const [submitting, setSubmitting] = useState(false);
 
@@ -73,7 +76,7 @@ const EmployeeManagement = () => {
                 body: JSON.stringify({
                     employeeName: formData.name,
                     gender: formData.gender,
-                    isWorking: isEditing ? editingEmployee.isWorking : true
+                    isWorking: formData.isWorking,
                 })
             });
 
@@ -109,13 +112,13 @@ const EmployeeManagement = () => {
 
     const handleAddClick = () => {
         setEditingEmployee(null);
-        setFormData({name: '', gender: ''});
+        setFormData({name: '', gender: '', isWorking: true});
         setOpenModal(true);
     }
 
     const handleEditClick = (employee) => {
         setEditingEmployee(employee);
-        setFormData({name: employee.employeeName, gender: employee.gender});
+        setFormData({name: employee.employeeName, gender: employee.gender, isWorking: employee.isWorking});
         setOpenModal(true);
     }
 
@@ -178,7 +181,10 @@ const EmployeeManagement = () => {
                     <TableBody>
                         {employees.length > 0 ? (
                             employees.map((currentEmployee) => (
-                                <TableRow key={currentEmployee.employeeId}>
+                                <TableRow
+                                    key={currentEmployee.employeeId}
+                                    sx={{opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer'}}
+                                >
                                     <TableCell>{currentEmployee.employeeId}</TableCell>
                                     <TableCell>{currentEmployee.employeeName}</TableCell>
                                     <TableCell>{currentEmployee.gender}</TableCell>
@@ -226,9 +232,22 @@ const EmployeeManagement = () => {
                                 <MenuItem value={'Female'}>Female</MenuItem>
                             </Select>
                         </FormControl>
+                        {editingEmployee && (
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={formData.isWorking}
+                                        onChange={(e) => setFormData({...formData, isWorking: e.target.checked})}
+                                        color={'primary'}
+                                    />
+                                }
+                                label={'Active'}
+                                sx={{mt: 1}}
+                            />
+                        )}
                     </Box>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions color={'white'}>
                     <Button onClick={handleCloseModal} color={'black'}>
                         Cancel
                     </Button>
