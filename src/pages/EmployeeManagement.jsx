@@ -24,7 +24,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {Add, Edit, PersonRemove} from "@mui/icons-material";
+import {Edit, PersonAdd, PersonRemove} from "@mui/icons-material";
 
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([]);
@@ -37,6 +37,7 @@ const EmployeeManagement = () => {
         gender: '',
     })
     const [submitting, setSubmitting] = useState(false);
+    const [editingEmployee, setEditingEmployee] = useState(null);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -57,40 +58,35 @@ const EmployeeManagement = () => {
         fetchEmployees();
     }, []);
 
-    if (loading) {
-        return <Container sx={{display: 'flex', justifyContent: 'center', mt: 5}}><CircularProgress/></Container>
-    }
+    const handleFormSubmit = async () => {
+        const isEditing = editingEmployee !== null;
+        const url = isEditing ? `/employees/${editingEmployee.employeeId}` : `/employees`;
+        const method = isEditing ? 'PUT' : 'POST';
 
-    if (error) {
-        return <Container><Alert severity={'error'}>{error}</Alert></Container>
-    }
-
-    const handleAddEmployee = async () => {
         try {
             setSubmitting(true);
-            const response = await fetch('/employees', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(
-                    {
-                        employeeName: formData.name,
-                        gender: formData.gender,
-                        isWorking: true
-                    }
-                )
+            const response = await fetch(url, {
+                method: method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    employeeName: formData.name,
+                    gender: formData.gender,
+                    isWorking: isEditing ? editingEmployee.isWorking : true
+                })
             });
+
             if (!response.ok) {
-                throw new Error('Failed to add employee');
+                throw new Error(isEditing ? 'Failed to update employee' : 'Failed to add employee');
             }
 
-            const newEmployee = await response.json();
+            const savedEmployee = await response.json();
 
-            setEmployees(previousEmployees => [...previousEmployees, newEmployee]);
-
-            setFormData({name: '', gender: ''});
-            setOpenModal(false);
+            if (isEditing) {
+                setEmployees(employees.map(currentEmployee => currentEmployee.employeeId === savedEmployee.employeeId ? savedEmployee : currentEmployee));
+            } else {
+                setEmployees([...employees, savedEmployee]);
+            }
+            handleCloseModal();
         } catch (error) {
             setError(error.message);
         } finally {
@@ -103,10 +99,37 @@ const EmployeeManagement = () => {
         setOpenModal(true);
     }
 
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setEditingEmployee(null);
+        setFormData({name: '', gender: ''});
+    }
+
+    const handleAddClick = () => {
+        setEditingEmployee(null);
+        setFormData({name: '', gender: ''});
+        setOpenModal(true);
+    }
+
+    const handleEditClick = (employee) => {
+        setEditingEmployee(employee);
+        setFormData({name: employee.employeeName, gender: employee.gender});
+        setOpenModal(true);
+    }
+
+    if (loading) {
+        return <Container sx={{display: 'flex', justifyContent: 'center', mt: 5}}><CircularProgress/></Container>
+    }
+
+    if (error) {
+        return <Container><Alert severity={'error'}>{error}</Alert></Container>
+    }
+
     return (
         <Container maxWidth={'lg'} sx={{mt: 4, mb: 4}}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                <Button variant={'contained'} startIcon={<Add/>} onClick={handleOpenModal}>
+                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
+
                     Add Employee
                 </Button>
             </Box>
@@ -130,7 +153,8 @@ const EmployeeManagement = () => {
                                     <TableCell>{currentEmployee.gender}</TableCell>
                                     <TableCell>{currentEmployee.isWorking ? 'Active' : 'Inactive'}</TableCell>
                                     <TableCell align={'right'}>
-                                        <IconButton size={'small'}><Edit/></IconButton>
+                                        <IconButton size={'small'}
+                                                    onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
                                         <IconButton size={'small'} color={'error'}><PersonRemove/></IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -145,9 +169,9 @@ const EmployeeManagement = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth={'sm'} fullWidth={true}>
+            <Dialog open={openModal} onClose={handleCloseModal} maxWidth={'sm'} fullWidth={true}>
                 <DialogTitle>
-                    <Typography variant={'h4'}>Add New Employee</Typography>
+                    <Typography variant={'h4'}>{editingEmployee ? 'Edit Employee' : 'Add New Employee'}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Box sx={{pt: 2}}>
@@ -173,15 +197,16 @@ const EmployeeManagement = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenModal(false)}>
+                    <Button onClick={handleCloseModal}>
                         Cancel
                     </Button>
                     <Button
                         variant={'contained'}
-                        onClick={handleAddEmployee}
+                        onClick={handleFormSubmit}
                         disabled={submitting || !formData.name || !formData.gender}
                     >
-                        {submitting ? <CircularProgress size={20}/> : 'Add Employee'}
+                        {submitting ?
+                            <CircularProgress size={20}/> : (editingEmployee ? 'Save Changes' : 'Add Employee')}
                     </Button>
                 </DialogActions>
             </Dialog>
