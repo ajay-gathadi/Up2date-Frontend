@@ -22,6 +22,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
     TablePagination,
     TableRow,
@@ -180,9 +181,8 @@ const EmployeeManagement = () => {
 
     return (
         <Container maxWidth={false} sx={{mt: 4, mb: 4, '& *:focus': {outline: 'none !important'}}}>
-            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}
-                        sx={{margin: 'auto'}}>
+            <Box sx={{border: '1px solid black', display: 'flex', justifyContent: 'flex-end', mb: 2, mr: 10}}>
+                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
                     Add Employee
                 </Button>
             </Box>
@@ -244,16 +244,20 @@ const EmployeeManagement = () => {
                             </TableRow>
                         )}
                     </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 20]}
+                                component="td"
+                                count={sortedEmployees.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </TableRow>
+                    </TableFooter>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 20]}
-                    component="td"
-                    count={sortedEmployees.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
             </TableContainer>
             <Dialog open={openModal} onClose={handleCloseModal} maxWidth={'sm'} fullWidth={true}>
                 <DialogTitle>
