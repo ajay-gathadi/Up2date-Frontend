@@ -181,7 +181,8 @@ const EmployeeManagement = () => {
     return (
         <Container maxWidth={false} sx={{mt: 4, mb: 4, '& *:focus': {outline: 'none !important'}}}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
+                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}
+                        sx={{margin: 'auto'}}>
                     Add Employee
                 </Button>
             </Box>
