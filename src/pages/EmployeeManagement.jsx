@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {
     Alert,
     Box,
@@ -43,6 +43,12 @@ const EmployeeManagement = () => {
 
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
+
+    const sortedEmployees = useMemo(() => {
+        return [...employees].sort((a, b) => {
+            return Number(b.isWorking) - Number(a.isWorking);
+        })
+    }, [employees]);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -179,8 +185,8 @@ const EmployeeManagement = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {employees.length > 0 ? (
-                            employees.map((currentEmployee) => (
+                        {sortedEmployees.length > 0 ? (
+                            sortedEmployees.map((currentEmployee) => (
                                 <TableRow
                                     key={currentEmployee.employeeId}
                                     sx={{opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer'}}
