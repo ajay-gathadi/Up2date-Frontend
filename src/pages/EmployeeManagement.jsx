@@ -3,6 +3,7 @@ import {
     Alert,
     Box,
     Button,
+    Chip,
     CircularProgress,
     Container,
     Dialog,
@@ -176,7 +177,7 @@ const EmployeeManagement = () => {
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx={{backgroundColor: `rgba(223, 168, 18, 0.69)`}}>
                             <TableCell>ID</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Gender</TableCell>
@@ -194,7 +195,13 @@ const EmployeeManagement = () => {
                                     <TableCell>{currentEmployee.employeeId}</TableCell>
                                     <TableCell>{currentEmployee.employeeName}</TableCell>
                                     <TableCell>{currentEmployee.gender}</TableCell>
-                                    <TableCell>{currentEmployee.isWorking ? 'Active' : 'Inactive'}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={currentEmployee.isWorking ? 'Active' : 'Inactive'}
+                                            color={currentEmployee.isWorking ? 'success' : 'error'}
+                                            size={'small'}
+                                        />
+                                    </TableCell>
                                     <TableCell align={'right'}>
                                         <IconButton size={'small'}
                                                     onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
