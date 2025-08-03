@@ -23,6 +23,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
+    TablePagination,
     TableRow,
     TextField,
     Typography
@@ -44,6 +45,8 @@ const EmployeeManagement = () => {
 
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const sortedEmployees = useMemo(() => {
         return [...employees].sort((a, b) => {
@@ -158,6 +161,15 @@ const EmployeeManagement = () => {
         }
     }
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    }
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    }
+
     if (loading) {
         return <Container sx={{display: 'flex', justifyContent: 'center', mt: 5}}><CircularProgress/></Container>
     }
@@ -167,17 +179,23 @@ const EmployeeManagement = () => {
     }
 
     return (
-        <Container maxWidth={'lg'} sx={{mt: 4, mb: 4}}>
+        <Container maxWidth={false} sx={{mt: 4, mb: 4, '& *:focus': {outline: 'none !important'}}}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
                 <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
-
                     Add Employee
                 </Button>
             </Box>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
-                        <TableRow sx={{backgroundColor: `rgba(223, 168, 18, 0.69)`}}>
+                        <TableRow
+                            sx={{
+                                backgroundColor: `rgba(223, 168, 18, 0.69)`,
+                                '& .MuiTableCell-root': {
+                                    fontWeight: 'bold',
+                                    fontSize: '15px'
+                                }
+                            }}>
                             <TableCell>ID</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Gender</TableCell>
@@ -187,29 +205,36 @@ const EmployeeManagement = () => {
                     </TableHead>
                     <TableBody>
                         {sortedEmployees.length > 0 ? (
-                            sortedEmployees.map((currentEmployee) => (
-                                <TableRow
-                                    key={currentEmployee.employeeId}
-                                    sx={{opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer'}}
-                                >
-                                    <TableCell>{currentEmployee.employeeId}</TableCell>
-                                    <TableCell>{currentEmployee.employeeName}</TableCell>
-                                    <TableCell>{currentEmployee.gender}</TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={currentEmployee.isWorking ? 'Active' : 'Inactive'}
-                                            color={currentEmployee.isWorking ? 'success' : 'error'}
-                                            size={'small'}
-                                        />
-                                    </TableCell>
-                                    <TableCell align={'right'}>
-                                        <IconButton size={'small'}
-                                                    onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
-                                        <IconButton size={'small'} color={'error'}
-                                                    onClick={() => handleDeleteClick(currentEmployee)}><PersonRemove/></IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                            sortedEmployees
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((currentEmployee) => (
+                                    <TableRow
+                                        key={currentEmployee.employeeId}
+                                        sx={{
+                                            opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer',
+                                            '& .MuiTableCell-root': {
+                                                fontSize: '14px'
+                                            }
+                                        }}
+                                    >
+                                        <TableCell>{currentEmployee.employeeId}</TableCell>
+                                        <TableCell>{currentEmployee.employeeName}</TableCell>
+                                        <TableCell>{currentEmployee.gender}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={currentEmployee.isWorking ? 'Active' : 'Inactive'}
+                                                color={currentEmployee.isWorking ? 'success' : 'error'}
+                                                size={'small'}
+                                            />
+                                        </TableCell>
+                                        <TableCell align={'right'}>
+                                            <IconButton size={'small'}
+                                                        onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
+                                            <IconButton size={'small'} color={'error'}
+                                                        onClick={() => handleDeleteClick(currentEmployee)}><PersonRemove/></IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={5} align={'center'}>
@@ -219,6 +244,15 @@ const EmployeeManagement = () => {
                         )}
                     </TableBody>
                 </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 20]}
+                    component="td"
+                    count={sortedEmployees.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </TableContainer>
             <Dialog open={openModal} onClose={handleCloseModal} maxWidth={'sm'} fullWidth={true}>
                 <DialogTitle>
