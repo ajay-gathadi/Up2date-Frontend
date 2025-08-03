@@ -110,11 +110,6 @@ const EmployeeManagement = () => {
         }
     }
 
-    const handleOpenModal = () => {
-        setFormData({name: '', gender: ''});
-        setOpenModal(true);
-    }
-
     const handleCloseModal = () => {
         setOpenModal(false);
         setEditingEmployee(null);
@@ -188,19 +183,22 @@ const EmployeeManagement = () => {
                 zIndex: 1000,
                 mb: 2,
                 width: 'fit-content',
+                '& *:focus': {outline: 'none !important'}
             }}>
                 <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
                     Add Employee
                 </Button>
             </Box>
-            <Box sx={{
-                width: '45vw',
-                // width: '100%',
-                maxWidth: '800px',
-                margin: '0 auto',
-                px: {xs: 2, sm: 4},
-                '& *:focus': {outline: 'none !important'}
-            }}>
+            <Box
+                sx={{
+                    width: '45vw',
+                    // width: '100%',
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    px: {xs: 2, sm: 4},
+                    '& *:focus': {outline: 'none !important'}
+                }}
+            >
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -275,12 +273,25 @@ const EmployeeManagement = () => {
                         </TableFooter>
                     </Table>
                 </TableContainer>
-                <Dialog open={openModal} onClose={handleCloseModal} maxWidth={'sm'} fullWidth={true}>
-                    <DialogTitle>
-                        <Typography variant={'h4'}>{editingEmployee ? 'Edit Employee' : 'Add New Employee'}</Typography>
+                <Dialog open={openModal}
+                        onClose={handleCloseModal} maxWidth={'xs'}
+                        fullWidth={true}
+                        sx={{
+                            '& *:focus': {outline: 'none !important'}
+                        }}
+                >
+                    <DialogTitle
+                        sx={{
+                            fontSize: '18px',
+                            textAlign: 'center'
+                        }}
+                    >
+                        <Typography variant={'h6'}>
+                            {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
+                        </Typography>
                     </DialogTitle>
                     <DialogContent>
-                        <Box sx={{pt: 2}}>
+                        <Box sx={{pt: 1}}>
                             <TextField
                                 fullWidth={true}
                                 label={'Employee Name'}
@@ -330,8 +341,13 @@ const EmployeeManagement = () => {
                     </DialogActions>
                 </Dialog>
 
-                <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth={'xs'}
-                        fullWidth={true}>
+                <Dialog open={deleteTarget !== null}
+                        onClose={() => setDeleteTarget(null)} maxWidth={'xs'}
+                        fullWidth={true}
+                        sx={{
+                            '& *:focus': {outline: 'none !important'}
+                        }}
+                >
                     <DialogTitle>Confirm Delete!</DialogTitle>
                     <DialogContent>
                         <Typography>
