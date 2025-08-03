@@ -29,7 +29,7 @@ const AppDrawer = ({open, onClose}) => {
 
     return (
         <Box
-            sx={{width: 245}}
+            sx={{width: 260}}
             role="presentation"
             onClick={onClose}
             onKeyDown={onClose}
