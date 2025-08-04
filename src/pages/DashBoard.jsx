@@ -116,24 +116,8 @@ function DashBoard() {
     return (
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box sx={{p: 1}}>
-                <Box sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', ml: -30, mt: -1}}>
-                    {/*<Typography sx={{*/}
-                    {/*    position: 'fixed',*/}
-                    {/*    top: 17,*/}
-                    {/*    left: 50,*/}
-                    {/*    right: 0,*/}
-                    {/*    backgroundColor: '#fff',*/}
-                    {/*    zIndex: 1000,*/}
-                    {/*    fontWeight: 'bold',*/}
-                    {/*    fontSize: 34,*/}
-                    {/*    textAlign: 'left',*/}
-                    {/*    width: '100%',*/}
-                    {/*}}>*/}
-                    {/*    Dashboard*/}
-                    {/*</Typography>*/}
-
-
+            <Box sx={{pt: 1}}>
+                <Box sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', ml: -20, mt: -2}}>
                     <DatePicker
                         label={"Select Date"}
                         value={selectedDate}
@@ -303,7 +287,14 @@ function DashBoard() {
                                             <TableContainer component={Paper}>
                                                 <Table>
                                                     <TableHead>
-                                                        <TableRow>
+                                                        <TableRow sx={{
+                                                            backgroundColor: `#be7292`,
+                                                            '& .MuiTableCell-root': {
+                                                                fontWeight: 'bold',
+                                                                fontSize: '15px',
+                                                                textAlign: 'center'
+                                                            }
+                                                        }}>
                                                             <TableCell>Customer Name</TableCell>
                                                             <TableCell>Mobile Number</TableCell>
                                                             <TableCell>Services</TableCell>
@@ -311,7 +302,7 @@ function DashBoard() {
                                                             <TableCell>Total Amount</TableCell>
                                                         </TableRow>
                                                     </TableHead>
-                                                    <TableBody>
+                                                    <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
                                                         {customerDetailsData.length > 0 ? (
                                                             customerDetailsData.map((currentCustomer, currentIndex) => (
                                                                 <TableRow key={currentIndex}>
@@ -343,12 +334,21 @@ function DashBoard() {
                                             <TableContainer component={Paper}>
                                                 <Table>
                                                     <TableHead>
-                                                        <TableRow>
+                                                        <TableRow
+                                                            sx={{
+                                                                backgroundColor: `#be7292`,
+                                                                '& .MuiTableCell-root': {
+                                                                    fontWeight: 'bold',
+                                                                    fontSize: '15px',
+                                                                    textAlign: 'center'
+                                                                }
+                                                            }}
+                                                        >
                                                             <TableCell>Employee Name</TableCell>
                                                             <TableCell>Commission Amount</TableCell>
                                                         </TableRow>
                                                     </TableHead>
-                                                    <TableBody>
+                                                    <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
                                                         {employeeCommissionData.length > 0 ? (
                                                             employeeCommissionData.map((currentEmployee, currentIndex) => (
                                                                 <TableRow key={currentIndex}>
