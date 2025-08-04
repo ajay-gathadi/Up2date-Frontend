@@ -108,6 +108,9 @@ function Reports() {
                         localeText={{start: 'Start Date', end: 'End Date'}}
                         value={dateRange}
                         onChange={(newValue) => setDateRange(newValue)}
+                        sx={{
+                            '& *:focus': {outline: 'none !important'}
+                        }}
                     />
                 </Box>
 
@@ -136,22 +139,29 @@ function Reports() {
                             <TableContainer component={Paper} sx={{mt: 1}}>
                                 <Table>
                                     <TableHead>
-                                        <TableRow>
+                                        <TableRow sx={{
+                                            backgroundColor: `rgba(33, 103, 147, 0.64)`,
+                                            '& .MuiTableCell-root': {
+                                                fontWeight: 'bold',
+                                                fontSize: '15px',
+                                                textAlign: 'center'
+                                            }
+                                        }}>
                                             <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Total Visits</TableCell>
+                                            {/*<TableCell sx={{fontWeight: 'bold'}}>Total Visits</TableCell>*/}
                                             <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Services Taken</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Last Visit Date</TableCell>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Visit Date</TableCell>
                                         </TableRow>
                                     </TableHead>
-                                    <TableBody>
+                                    <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
                                         {customerSummaryData.length > 0 ? (
                                             customerSummaryData.map((currentCustomer, currentIndex) => (
                                                 <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
                                                     <TableCell>{currentCustomer.customerName}</TableCell>
                                                     <TableCell>{currentCustomer.mobileNumber}</TableCell>
-                                                    <TableCell>{currentCustomer.totalVisits}</TableCell>
+                                                    {/*<TableCell>{currentCustomer.totalVisits}</TableCell>*/}
                                                     <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
                                                     <TableCell
                                                         sx={{
@@ -190,13 +200,20 @@ function Reports() {
                             <TableContainer component={Paper} sx={{mt: 1}}>
                                 <Table>
                                     <TableHead>
-                                        <TableRow>
+                                        <TableRow sx={{
+                                            backgroundColor: `rgba(33, 103, 147, 0.64)`,
+                                            '& .MuiTableCell-root': {
+                                                fontWeight: 'bold',
+                                                fontSize: '15px',
+                                                textAlign: 'center'
+                                            }
+                                        }}>
                                             <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Commission Amount</TableCell>
                                             {/*<TableCell>Date</TableCell>*/}
                                         </TableRow>
                                     </TableHead>
-                                    <TableBody>
+                                    <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
                                         {employeeCommissionData.map((row) => (
                                             <TableRow key={row.employeeName}>
                                                 <TableCell>{row.employeeName}</TableCell>
