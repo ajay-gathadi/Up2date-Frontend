@@ -175,196 +175,194 @@ const EmployeeManagement = () => {
     }
 
     return (
-        <>
-            <Box sx={{
-                position: 'absolute',
-                left: 1200,
-                top: 30,
-                zIndex: 1000,
-                mb: 2,
-                width: 'fit-content',
-                '& *:focus': {outline: 'none !important'}
-            }}>
-                <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}>
-                    Add Employee
-                </Button>
-            </Box>
-            <Box
+        <Box sx={{
+            width: '90vw',
+            maxWidth: '1400px',
+            px: {xs: 1, sm: 2, md: 3},
+            '& *:focus': {outline: 'none !important'},
+            position: 'relative',
+        }}>
+            <Button variant={'contained'} startIcon={<PersonAdd/>} onClick={handleAddClick}
+                    sx={{
+                        position: 'absolute',
+                        right: {xs: 8, sm: 16, md: 24},
+                        zIndex: 1,
+                    }}
+            >
+                Add Employee
+            </Button>
+
+            <TableContainer
+                component={Paper}
                 sx={{
-                    width: '45vw',
-                    // width: '100%',
-                    maxWidth: '800px',
+                    maxWidth: '600px',
                     margin: '0 auto',
-                    px: {xs: 2, sm: 4},
-                    '& *:focus': {outline: 'none !important'}
                 }}
             >
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow
-                                sx={{
-                                    backgroundColor: `rgba(223, 168, 18, 0.69)`,
-                                    '& .MuiTableCell-root': {
-                                        fontWeight: 'bold',
-                                        fontSize: '15px'
-                                    }
-                                }}>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Gender</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell align={'right'}>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {sortedEmployees.length > 0 ? (
-                                sortedEmployees
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((currentEmployee) => (
-                                        <TableRow
-                                            key={currentEmployee.employeeId}
-                                            sx={{
-                                                opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer',
-                                                '& .MuiTableCell-root': {
-                                                    fontSize: '14px'
-                                                }
-                                            }}
-                                        >
-                                            <TableCell>{currentEmployee.employeeId}</TableCell>
-                                            <TableCell>{currentEmployee.employeeName}</TableCell>
-                                            <TableCell>{currentEmployee.gender}</TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    label={currentEmployee.isWorking ? 'Active' : 'Inactive'}
-                                                    color={currentEmployee.isWorking ? 'success' : 'error'}
-                                                    size={'small'}
-                                                />
-                                            </TableCell>
-                                            <TableCell align={'right'}>
-                                                <IconButton size={'small'}
-                                                            onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
-                                                <IconButton size={'small'} color={'error'}
-                                                            onClick={() => handleDeleteClick(currentEmployee)}><PersonRemove/></IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={5} align={'center'}>
-                                        No Employees Found
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                        <TableFooter>
+                <Table>
+                    <TableHead>
+                        <TableRow
+                            sx={{
+                                backgroundColor: `rgba(223, 168, 18, 0.69)`,
+                                '& .MuiTableCell-root': {
+                                    fontWeight: 'bold',
+                                    fontSize: '15px'
+                                }
+                            }}>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Gender</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell align={'right'}>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {sortedEmployees.length > 0 ? (
+                            sortedEmployees
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((currentEmployee) => (
+                                    <TableRow
+                                        key={currentEmployee.employeeId}
+                                        sx={{
+                                            opacity: currentEmployee.isWorking ? 1 : 0.5, cursor: 'pointer',
+                                            '& .MuiTableCell-root': {
+                                                fontSize: '14px'
+                                            }
+                                        }}
+                                    >
+                                        <TableCell>{currentEmployee.employeeId}</TableCell>
+                                        <TableCell>{currentEmployee.employeeName}</TableCell>
+                                        <TableCell>{currentEmployee.gender}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={currentEmployee.isWorking ? 'Active' : 'Inactive'}
+                                                color={currentEmployee.isWorking ? 'success' : 'error'}
+                                                size={'small'}
+                                            />
+                                        </TableCell>
+                                        <TableCell align={'right'}>
+                                            <IconButton size={'small'}
+                                                        onClick={() => handleEditClick(currentEmployee)}><Edit/></IconButton>
+                                            <IconButton size={'small'} color={'error'}
+                                                        onClick={() => handleDeleteClick(currentEmployee)}><PersonRemove/></IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                        ) : (
                             <TableRow>
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 20]}
-                                    colSpan={5}
-                                    component="td"
-                                    count={sortedEmployees.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                />
+                                <TableCell colSpan={5} align={'center'}>
+                                    No Employees Found
+                                </TableCell>
                             </TableRow>
-                        </TableFooter>
-                    </Table>
-                </TableContainer>
-                <Dialog open={openModal}
-                        onClose={handleCloseModal} maxWidth={'xs'}
-                        fullWidth={true}
-                        sx={{
-                            '& *:focus': {outline: 'none !important'}
-                        }}
-                >
-                    <DialogTitle
-                        sx={{
-                            fontSize: '18px',
-                            textAlign: 'center'
-                        }}
-                    >
-                        <Typography variant={'h6'}>
-                            {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
-                        </Typography>
-                    </DialogTitle>
-                    <DialogContent>
-                        <Box sx={{pt: 1}}>
-                            <TextField
-                                fullWidth={true}
-                                label={'Employee Name'}
-                                value={formData.name}
-                                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                margin={'normal'}
-                                required={true}
+                        )}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 20]}
+                                colSpan={5}
+                                component="td"
+                                count={sortedEmployees.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
                             />
-                            <FormControl fullWidth={true} margin={'normal'} required={true}>
-                                <InputLabel>Gender</InputLabel>
-                                <Select
-                                    value={formData.gender}
-                                    label={'Gender'}
-                                    onChange={(e) => setFormData({...formData, gender: e.target.value})}
-                                >
-                                    <MenuItem value={'Male'}>Male</MenuItem>
-                                    <MenuItem value={'Female'}>Female</MenuItem>
-                                </Select>
-                            </FormControl>
-                            {editingEmployee && (
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={formData.isWorking}
-                                            onChange={(e) => setFormData({...formData, isWorking: e.target.checked})}
-                                            color={'primary'}
-                                        />
-                                    }
-                                    label={'Active'}
-                                    sx={{mt: 1}}
-                                />
-                            )}
-                        </Box>
-                    </DialogContent>
-                    <DialogActions color={'white'}>
-                        <Button onClick={handleCloseModal} color={'black'}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant={'contained'}
-                            onClick={handleFormSubmit}
-                            disabled={submitting || !formData.name || !formData.gender}
-                        >
-                            {submitting ?
-                                <CircularProgress size={20}/> : (editingEmployee ? 'Save Changes' : 'Add Employee')}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-
-                <Dialog open={deleteTarget !== null}
-                        onClose={() => setDeleteTarget(null)} maxWidth={'xs'}
-                        fullWidth={true}
-                        sx={{
-                            '& *:focus': {outline: 'none !important'}
-                        }}
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </TableContainer>
+            <Dialog open={openModal}
+                    onClose={handleCloseModal} maxWidth={'xs'}
+                    fullWidth={true}
+                    sx={{
+                        '& *:focus': {outline: 'none !important'}
+                    }}
+            >
+                <DialogTitle
+                    sx={{
+                        fontSize: '18px',
+                        textAlign: 'center'
+                    }}
                 >
-                    <DialogTitle>Confirm Delete!</DialogTitle>
-                    <DialogContent>
-                        <Typography>
-                            Are you sure you want to remove <strong>{deleteTarget?.employeeName}</strong>?
-                            This will mark them as inactive.
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
-                        <Button onClick={handleDeleteConfirm} color={'error'} variant={'contained'}
-                                disabled={submitting}>
-                            {submitting ? <CircularProgress size={20} color={'inherit'}/> : 'Confirm Delete'}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </Box>
-        </>
+                    <Typography variant={'h6'}>
+                        {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Box sx={{pt: 1}}>
+                        <TextField
+                            fullWidth={true}
+                            label={'Employee Name'}
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            margin={'normal'}
+                            required={true}
+                        />
+                        <FormControl fullWidth={true} margin={'normal'} required={true}>
+                            <InputLabel>Gender</InputLabel>
+                            <Select
+                                value={formData.gender}
+                                label={'Gender'}
+                                onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                            >
+                                <MenuItem value={'Male'}>Male</MenuItem>
+                                <MenuItem value={'Female'}>Female</MenuItem>
+                            </Select>
+                        </FormControl>
+                        {editingEmployee && (
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={formData.isWorking}
+                                        onChange={(e) => setFormData({...formData, isWorking: e.target.checked})}
+                                        color={'primary'}
+                                    />
+                                }
+                                label={'Active'}
+                                sx={{mt: 1}}
+                            />
+                        )}
+                    </Box>
+                </DialogContent>
+                <DialogActions color={'white'}>
+                    <Button onClick={handleCloseModal} color={'black'}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant={'contained'}
+                        onClick={handleFormSubmit}
+                        disabled={submitting || !formData.name || !formData.gender}
+                    >
+                        {submitting ?
+                            <CircularProgress size={20}/> : (editingEmployee ? 'Save Changes' : 'Add Employee')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={deleteTarget !== null}
+                    onClose={() => setDeleteTarget(null)} maxWidth={'xs'}
+                    fullWidth={true}
+                    sx={{
+                        '& *:focus': {outline: 'none !important'}
+                    }}
+            >
+                <DialogTitle>Confirm Delete!</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to remove <strong>{deleteTarget?.employeeName}</strong>?
+                        This will mark them as inactive.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                    <Button onClick={handleDeleteConfirm} color={'error'} variant={'contained'}
+                            disabled={submitting}>
+                        {submitting ? <CircularProgress size={20} color={'inherit'}/> : 'Confirm Delete'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
     )
 }
 export default EmployeeManagement;
