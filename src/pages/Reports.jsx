@@ -150,7 +150,6 @@ function Reports() {
                                         }}>
                                             <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
-                                            {/*<TableCell sx={{fontWeight: 'bold'}}>Total Visits</TableCell>*/}
                                             <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Services Taken</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Visit Date</TableCell>
@@ -162,7 +161,6 @@ function Reports() {
                                                 <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
                                                     <TableCell>{currentCustomer.customerName}</TableCell>
                                                     <TableCell>{currentCustomer.mobileNumber}</TableCell>
-                                                    {/*<TableCell>{currentCustomer.totalVisits}</TableCell>*/}
                                                     <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
                                                     <TableCell
                                                         sx={{
