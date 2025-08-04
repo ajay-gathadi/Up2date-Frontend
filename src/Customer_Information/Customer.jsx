@@ -5,7 +5,7 @@ import React, {useState} from "react";
 import Services from "./Services.jsx";
 import Employee from "./Employee.jsx";
 import PaymentMethod from "./PaymentMethod.jsx";
-import salonName from "../assets/Up2Date Family Salon.png";
+import salonName from "../icons/Up2Date Family Salon.png";
 import {Alert, Box, Button, Card, CardContent, Container, Grid, Paper, Snackbar, Typography} from "@mui/material";
 
 export default function Customer() {
