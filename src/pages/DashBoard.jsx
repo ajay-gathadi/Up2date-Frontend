@@ -292,9 +292,11 @@ function DashBoard() {
                                                             '& .MuiTableCell-root': {
                                                                 fontWeight: 'bold',
                                                                 fontSize: '15px',
-                                                                textAlign: 'center'
+                                                                textAlign: 'center',
+                                                                color: 'white'
                                                             }
                                                         }}>
+                                                            <TableCell>Sr. No</TableCell>
                                                             <TableCell>Customer Name</TableCell>
                                                             <TableCell>Mobile Number</TableCell>
                                                             <TableCell>Services</TableCell>
@@ -306,6 +308,7 @@ function DashBoard() {
                                                         {customerDetailsData.length > 0 ? (
                                                             customerDetailsData.map((currentCustomer, currentIndex) => (
                                                                 <TableRow key={currentIndex}>
+                                                                    <TableCell>{customerDetailsData.length - currentIndex}</TableCell>
                                                                     <TableCell>{currentCustomer.customerName}</TableCell>
                                                                     <TableCell>{currentCustomer.mobileNumber}</TableCell>
                                                                     <TableCell sx={{
@@ -331,16 +334,22 @@ function DashBoard() {
 
                                     {activeTab === 1 && (
                                         <Box sx={{p: 2}}>
-                                            <TableContainer component={Paper}>
+                                            <TableContainer
+                                                component={Paper}
+                                                sx={{
+                                                    maxWidth: '500px',
+                                                    margin: '0 auto',
+                                                }}>
                                                 <Table>
                                                     <TableHead>
                                                         <TableRow
                                                             sx={{
-                                                                backgroundColor: `#be7292`,
+                                                                backgroundColor: `rgba(33, 103, 147, 0.64)`,
                                                                 '& .MuiTableCell-root': {
                                                                     fontWeight: 'bold',
                                                                     fontSize: '15px',
-                                                                    textAlign: 'center'
+                                                                    textAlign: 'center',
+                                                                    color: 'white'
                                                                 }
                                                             }}
                                                         >

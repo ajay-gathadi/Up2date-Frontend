@@ -144,7 +144,8 @@ function Reports() {
                                             '& .MuiTableCell-root': {
                                                 fontWeight: 'bold',
                                                 fontSize: '15px',
-                                                textAlign: 'center'
+                                                textAlign: 'center',
+                                                color: 'white'
                                             }
                                         }}>
                                             <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
@@ -205,7 +206,8 @@ function Reports() {
                                             '& .MuiTableCell-root': {
                                                 fontWeight: 'bold',
                                                 fontSize: '15px',
-                                                textAlign: 'center'
+                                                textAlign: 'center',
+                                                color: 'white'
                                             }
                                         }}>
                                             <TableCell sx={{fontWeight: 'bold'}}>Employee Name</TableCell>
