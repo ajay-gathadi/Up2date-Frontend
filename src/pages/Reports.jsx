@@ -12,7 +12,9 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
+    TablePagination,
     TableRow,
     Tabs,
     Typography
@@ -26,10 +28,8 @@ function Reports() {
     const [customerSummaryData, setCustomerSummaryData] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
     const [dateRange, setDateRange] = useState([null, null]);
-
-    const handleTabChange = (event, newValue) => {
-        setActiveTab(newValue);
-    };
+    const [customerPage, setCustomerPage] = useState(0);
+    const [customerRowsPerPage, setCustomerRowsPerPage] = useState(10);
 
     useEffect(() => {
 
@@ -75,7 +75,8 @@ function Reports() {
                 const response = await fetch(`/dashboard/customer-summary?startDate=${startDate}&endDate=${endDate}`);
                 if (response.ok) {
                     const data = await response.json();
-                    setCustomerSummaryData(data);
+                    const sortedData = data.sort((a, b) => new Date(b.lastVisitDate) - new Date(a.lastVisitDate));
+                    setCustomerSummaryData(sortedData);
                     setError(null);
                 } else {
                     const errorText = await response.text();
@@ -96,6 +97,19 @@ function Reports() {
         }
     }, [dateRange, activeTab]);
 
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
+
+    const handleCustomerPageChange = (event, newPage) => {
+        setCustomerPage(newPage);
+    }
+
+    const handleChangeCustomerRowsPerPage = (event) => {
+        setCustomerRowsPerPage(parseInt(event.target.value, 10));
+        setCustomerPage(0);
+    }
+
     return (
         <LocalizationProvider locale="en" dateAdapter={AdapterDateFns}>
             <Box sx={{p: 1}}>
@@ -107,6 +121,7 @@ function Reports() {
                     <DateRangePicker
                         localeText={{start: 'Start Date', end: 'End Date'}}
                         value={dateRange}
+                        format={'dd-MM-yyyy'}
                         onChange={(newValue) => setDateRange(newValue)}
                         sx={{
                             '& *:focus': {outline: 'none !important'}
@@ -140,7 +155,7 @@ function Reports() {
                                 <Table>
                                     <TableHead>
                                         <TableRow sx={{
-                                            backgroundColor: `rgba(33, 103, 147, 0.64)`,
+                                            backgroundColor: `#72c2c9`,
                                             '& .MuiTableCell-root': {
                                                 fontWeight: 'bold',
                                                 fontSize: '15px',
@@ -148,6 +163,7 @@ function Reports() {
                                                 color: 'white'
                                             }
                                         }}>
+                                            <TableCell sx={{fontWeight: 'bold'}}>Sr. No</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
                                             <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
@@ -157,23 +173,26 @@ function Reports() {
                                     </TableHead>
                                     <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
                                         {customerSummaryData.length > 0 ? (
-                                            customerSummaryData.map((currentCustomer, currentIndex) => (
-                                                <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
-                                                    <TableCell>{currentCustomer.customerName}</TableCell>
-                                                    <TableCell>{currentCustomer.mobileNumber}</TableCell>
-                                                    <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
-                                                    <TableCell
-                                                        sx={{
-                                                            maxWidth: '200px',
-                                                            wordBreak: 'break-word',
-                                                        }}
-                                                        title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
-                                                    >
-                                                        {Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || 'N/A'}
-                                                    </TableCell>
-                                                    <TableCell>{new Date(currentCustomer.lastVisitDate).toLocaleDateString('en-IN')}</TableCell>
-                                                </TableRow>
-                                            ))
+                                            customerSummaryData
+                                                .slice(customerPage * customerRowsPerPage, customerPage * customerRowsPerPage + customerRowsPerPage)
+                                                .map((currentCustomer, currentIndex) => (
+                                                    <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
+                                                        <TableCell>{currentIndex + 1}</TableCell>
+                                                        <TableCell>{currentCustomer.customerName}</TableCell>
+                                                        <TableCell>{currentCustomer.mobileNumber}</TableCell>
+                                                        <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
+                                                        <TableCell
+                                                            sx={{
+                                                                maxWidth: '200px',
+                                                                wordBreak: 'break-word',
+                                                            }}
+                                                            title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
+                                                        >
+                                                            {Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || 'N/A'}
+                                                        </TableCell>
+                                                        <TableCell>{new Date(currentCustomer.lastVisitDate).toLocaleDateString('en-IN')}</TableCell>
+                                                    </TableRow>
+                                                ))
                                         ) : (
                                             <TableRow>
                                                 <TableCell colSpan={6} align="center">
@@ -184,6 +203,29 @@ function Reports() {
                                             </TableRow>
                                         )}
                                     </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TablePagination
+                                                sx={{
+                                                    '& .MuiTablePagination': {
+                                                        outline: 'none !important'
+                                                    }
+                                                }}
+                                                rowsPerPageOptions={[10, 20, 30, 50]}
+                                                count={customerSummaryData.length}
+                                                rowsPerPage={customerRowsPerPage}
+                                                page={customerPage}
+                                                onPageChange={handleCustomerPageChange}
+                                                onRowsPerPageChange={handleChangeCustomerRowsPerPage}
+                                                labelRowsPerPage={'Rows per page'}
+                                                labelDisplayedRows={({
+                                                                         from,
+                                                                         to,
+                                                                         count
+                                                                     }) => `${from}-${to} of ${count}`}
+                                            />
+                                        </TableRow>
+                                    </TableFooter>
                                 </Table>
                             </TableContainer>
 
