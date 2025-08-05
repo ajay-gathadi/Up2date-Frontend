@@ -253,9 +253,8 @@ export default function Customer() {
                 />
             </Box>
             <Paper
-                // elevation={3}
                 sx={{
-                    borderRadius: 4,
+                    borderRadius: 7,
                     overflowY: "auto",
                     height: "100%",
                     width: "100%",
