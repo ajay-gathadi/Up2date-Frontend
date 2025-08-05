@@ -6,7 +6,9 @@ import {
     Alert,
     Box,
     CircularProgress,
+    FormControlLabel,
     Paper,
+    Switch,
     Tab,
     Table,
     TableBody,
@@ -20,6 +22,7 @@ import {
     Typography
 } from "@mui/material";
 import {format} from "date-fns";
+import {usePremiumFilter} from "../hooks/usePremiumFilter";
 
 function Reports() {
     const [loading, setLoading] = useState(false);
@@ -30,6 +33,12 @@ function Reports() {
     const [dateRange, setDateRange] = useState([null, null]);
     const [customerPage, setCustomerPage] = useState(0);
     const [customerRowsPerPage, setCustomerRowsPerPage] = useState(10);
+
+    const {
+        filterData: filteredCustomerSummary,
+        showPremiumOnly: showPremiumFilter,
+        setShowPremiumOnly: setShowPremiumFilter
+    } = usePremiumFilter(customerSummaryData);
 
     useEffect(() => {
 
@@ -101,6 +110,11 @@ function Reports() {
         setActiveTab(newValue);
     };
 
+    const handleFilterChange = (event) => {
+        setShowPremiumFilter(event.target.checked);
+        setCustomerPage(0);
+    }
+
     const handleCustomerPageChange = (event, newPage) => {
         setCustomerPage(newPage);
     }
@@ -151,84 +165,95 @@ function Reports() {
                         }
                         {error && <Alert severity={'error'} sx={{mt: 2}}>{error}</Alert>}
                         {!loading && !error && dateRange[0] && dateRange[1] && (
-                            <TableContainer component={Paper} sx={{mt: 1}}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow sx={{
-                                            backgroundColor: `#72c2c9`,
-                                            '& .MuiTableCell-root': {
-                                                fontWeight: 'bold',
-                                                fontSize: '15px',
-                                                textAlign: 'center',
-                                                color: 'white'
-                                            }
-                                        }}>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Sr. No</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Services Taken</TableCell>
-                                            <TableCell sx={{fontWeight: 'bold'}}>Visit Date</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
-                                        {customerSummaryData.length > 0 ? (
-                                            customerSummaryData
-                                                .slice(customerPage * customerRowsPerPage, customerPage * customerRowsPerPage + customerRowsPerPage)
-                                                .map((currentCustomer, currentIndex) => (
-                                                    <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
-                                                        <TableCell>{currentIndex + 1}</TableCell>
-                                                        <TableCell>{currentCustomer.customerName}</TableCell>
-                                                        <TableCell>{currentCustomer.mobileNumber}</TableCell>
-                                                        <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
-                                                        <TableCell
-                                                            sx={{
-                                                                maxWidth: '200px',
-                                                                wordBreak: 'break-word',
-                                                            }}
-                                                            title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
-                                                        >
-                                                            {Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || 'N/A'}
-                                                        </TableCell>
-                                                        <TableCell>{new Date(currentCustomer.lastVisitDate).toLocaleDateString('en-IN')}</TableCell>
-                                                    </TableRow>
-                                                ))
-                                        ) : (
-                                            <TableRow>
-                                                <TableCell colSpan={6} align="center">
-                                                    <Typography variant="body2" color="textSecondary">
-                                                        No customer data available for the selected date range.
-                                                    </Typography>
-                                                </TableCell>
+                            <>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={showPremiumFilter}
+                                            onChange={handleFilterChange}
+                                        />
+                                    }
+                                    label={'Show Premium Customers'}
+                                    sx={{mb: 0.5, display: 'flex', justifyContent: 'flex-end'}}
+                                />
+                                <TableContainer component={Paper} sx={{mt: 1}}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow sx={{
+                                                backgroundColor: `#72c2c9`,
+                                                '& .MuiTableCell-root': {
+                                                    fontWeight: 'bold',
+                                                    fontSize: '15px',
+                                                    textAlign: 'center',
+                                                    color: 'white'
+                                                }
+                                            }}>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Sr. No</TableCell>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Customer Name</TableCell>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Mobile Number</TableCell>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Total Amount</TableCell>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Services Taken</TableCell>
+                                                <TableCell sx={{fontWeight: 'bold'}}>Visit Date</TableCell>
                                             </TableRow>
-                                        )}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TablePagination
-                                                sx={{
-                                                    '& .MuiTablePagination': {
-                                                        outline: 'none !important'
-                                                    }
-                                                }}
-                                                rowsPerPageOptions={[10, 20, 30, 50]}
-                                                count={customerSummaryData.length}
-                                                rowsPerPage={customerRowsPerPage}
-                                                page={customerPage}
-                                                onPageChange={handleCustomerPageChange}
-                                                onRowsPerPageChange={handleChangeCustomerRowsPerPage}
-                                                labelRowsPerPage={'Rows per page'}
-                                                labelDisplayedRows={({
-                                                                         from,
-                                                                         to,
-                                                                         count
-                                                                     }) => `${from}-${to} of ${count}`}
-                                            />
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
-                            </TableContainer>
-
+                                        </TableHead>
+                                        <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
+                                            {filteredCustomerSummary.length > 0 ? (
+                                                filteredCustomerSummary
+                                                    .slice(customerPage * customerRowsPerPage, customerPage * customerRowsPerPage + customerRowsPerPage)
+                                                    .map((currentCustomer, currentIndex) => (
+                                                        <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
+                                                            <TableCell>{currentIndex + 1}</TableCell>
+                                                            <TableCell>{currentCustomer.customerName}</TableCell>
+                                                            <TableCell>{currentCustomer.mobileNumber}</TableCell>
+                                                            <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
+                                                            <TableCell
+                                                                sx={{
+                                                                    maxWidth: '200px',
+                                                                    wordBreak: 'break-word',
+                                                                }}
+                                                                title={Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || ''}
+                                                            >
+                                                                {Array.isArray(currentCustomer.services) ? currentCustomer.services.join(', ') : currentCustomer.services || 'N/A'}
+                                                            </TableCell>
+                                                            <TableCell>{new Date(currentCustomer.lastVisitDate).toLocaleDateString('en-IN')}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={6} align="center">
+                                                        <Typography variant="body2" color="textSecondary">
+                                                            No customer data available for the selected date range.
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TablePagination
+                                                    sx={{
+                                                        '& .MuiTablePagination': {
+                                                            outline: 'none !important'
+                                                        }
+                                                    }}
+                                                    rowsPerPageOptions={[10, 20, 30, 50]}
+                                                    count={filteredCustomerSummary.length}
+                                                    rowsPerPage={customerRowsPerPage}
+                                                    page={customerPage}
+                                                    onPageChange={handleCustomerPageChange}
+                                                    onRowsPerPageChange={handleChangeCustomerRowsPerPage}
+                                                    labelRowsPerPage={'Rows per page'}
+                                                    labelDisplayedRows={({
+                                                                             from,
+                                                                             to,
+                                                                             count
+                                                                         }) => `${from}-${to} of ${count}`}
+                                                />
+                                            </TableRow>
+                                        </TableFooter>
+                                    </Table>
+                                </TableContainer>
+                            </>
                         )}
                     </Box>
                 )}

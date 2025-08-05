@@ -4,8 +4,10 @@ import {
     Card,
     CardContent,
     Container,
+    FormControlLabel,
     Grid,
     Paper,
+    Switch,
     Tab,
     Table,
     TableBody,
@@ -21,6 +23,7 @@ import {
 import {useEffect, useState} from "react";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {usePremiumFilter} from "../hooks/usePremiumFilter";
 
 const DashboardCard = ({title, amount, color = "rgba(243,203,69)"}) => (
     <>
@@ -63,6 +66,12 @@ function DashBoard() {
     const [customerDetailsData, setCustomerDetailsData] = useState([]);
     const [customerPage, setCustomerPage] = useState(0);
     const [customerRowsPerPage, setCustomerRowsPerPage] = useState(10);
+
+    const {
+        filterData: filteredCustomerDetails,
+        showPremiumOnly,
+        setShowPremiumOnly
+    } = usePremiumFilter(customerDetailsData);
 
     useEffect(() => {
         const fetchDashboardSummary = async () => {
@@ -302,6 +311,15 @@ function DashBoard() {
 
                                 {activeTab === 0 && (
                                     <Box sx={{p: 2}}>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={showPremiumOnly}
+                                                    onChange={(e) => setShowPremiumOnly(e.target.checked)}/>
+                                            }
+                                            label={"Show Premium Customers"}
+                                            sx={{mb: 0.5, display: 'flex', justifyContent: 'flex-end'}}
+                                        />
                                         <TableContainer component={Paper}>
                                             <Table>
                                                 <TableHead>
@@ -323,12 +341,12 @@ function DashBoard() {
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody sx={{'& .MuiTableCell-root': {textAlign: 'center'}}}>
-                                                    {customerDetailsData.length > 0 ? (
-                                                        customerDetailsData
+                                                    {filteredCustomerDetails.length > 0 ? (
+                                                        filteredCustomerDetails
                                                             .slice(customerPage * customerRowsPerPage, customerPage * customerRowsPerPage + customerRowsPerPage)
                                                             .map((currentCustomer, currentIndex) => (
                                                                 <TableRow key={currentIndex}>
-                                                                    <TableCell>{customerDetailsData.length - (customerPage * customerRowsPerPage + currentIndex)}</TableCell>
+                                                                    <TableCell>{filteredCustomerDetails.length - (customerPage * customerRowsPerPage + currentIndex)}</TableCell>
                                                                     <TableCell>{currentCustomer.customerName}</TableCell>
                                                                     <TableCell>{currentCustomer.mobileNumber}</TableCell>
                                                                     <TableCell sx={{
@@ -350,7 +368,8 @@ function DashBoard() {
                                                     <TableRow>
                                                         <TablePagination
                                                             rowsPerPageOptions={[10, 20, 30, 50]}
-                                                            count={customerDetailsData.length}
+                                                            colSpan={6}
+                                                            count={filteredCustomerDetails.length}
                                                             rowsPerPage={customerRowsPerPage}
                                                             page={customerPage}
                                                             onPageChange={handleCustomerPageChange}
