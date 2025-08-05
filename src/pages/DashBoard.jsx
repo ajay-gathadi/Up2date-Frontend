@@ -236,7 +236,7 @@ function DashBoard() {
                 />
             </Box>
 
-            <Container maxWidth="false" sx={{flex: 1, mb: 4, mt: 2}}>
+            <Container maxWidth="false" sx={{flex: 1, mb: 4, mt: 1}}>
                 {
                     loading ? (
                         <Typography sx={{textAlign: 'center', mt: 4}}>Loading data...</Typography>
@@ -293,7 +293,7 @@ function DashBoard() {
                                 </Grid>
                             </Grid>
 
-                            <Box sx={{width: '100%', mt: 4}}>
+                            <Box sx={{width: '100%', mt: 3}}>
                                 <Tabs value={activeTab} onChange={handleTabChange} centered={true}
                                       indicatorColor={'primary'}
                                       textColor={'primary'}>
@@ -315,7 +315,8 @@ function DashBoard() {
                                             control={
                                                 <Switch
                                                     checked={showPremiumOnly}
-                                                    onChange={(e) => setShowPremiumOnly(e.target.checked)}/>
+                                                    onChange={(e) => setShowPremiumOnly(e.target.checked)}
+                                                />
                                             }
                                             label={"Show Premium Customers"}
                                             sx={{mb: 0.5, display: 'flex', justifyContent: 'flex-end'}}

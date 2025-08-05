@@ -233,15 +233,14 @@ export default function Customer() {
     };
 
     return (
-        <Container maxWidth={false}>
+        <Container
+            maxWidth={false}
+        >
             <Box
                 sx={{
-                    pt: 1,
-                    position: "absolute",
-                    top: "7px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: -1
                 }}
             >
                 <img
@@ -259,7 +258,7 @@ export default function Customer() {
                     height: "100%",
                     width: "100%",
                     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                    mt: -3,
+                    mt: 1
                 }}
                 variant="outlined"
             >
