@@ -7,4 +7,13 @@ const apiClient = axios.create({
     },
 });
 
+apiClient.interceptors.request.use((config) => {
+    if (config.method === 'get') {
+        config.headers['Cache-Control'] = 'no-cache';
+        config.headers['Pragma'] = 'no-cache';
+        config.headers['Expires'] = '0';
+    }
+    return config;
+})
+
 export default apiClient;
