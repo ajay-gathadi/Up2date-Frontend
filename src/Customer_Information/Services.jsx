@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {ArrowDownward, ArrowUpward,} from "@mui/icons-material";
+import {getSalonServices} from "../services/salonService";
 
 function Services({value, onChange, gender, error = null}) {
     const [services, setServices] = useState([]);
@@ -24,13 +25,6 @@ function Services({value, onChange, gender, error = null}) {
 
     const formControlRef = useRef(null);
     const outlinedInputRef = useRef(null);
-
-    // console.log(
-    //     `%cRENDER: alwaysOpen=<span class="math-inline">\{alwaysOpen\}, isOpen\=</span>{isOpen}, anchorEl=${
-    //         anchorEl ? "exists" : "null"
-    //     }`,
-    //     "color: blue; font-weight: bold;"
-    // );
 
     const handleClick = (event) => {
         if (!alwaysOpen) {
@@ -56,17 +50,9 @@ function Services({value, onChange, gender, error = null}) {
         setAlwaysOpen(newCheckedState);
 
         if (!newCheckedState) {
-            // console.log(
-            //     "%cHANDLE_TOGGLE_MODE: Setting to OFF state (anchor=null, isOpen=false)",
-            //     "color: green;"
-            // );
             setAnchorEl(null);
             setIsOpen(false);
         } else {
-            // console.log(
-            //     "%cHANDLE_TOGGLE_MODE: Setting to ON state (anchor=ref, isOpen=true)",
-            //     "color: green;"
-            // );
             setAnchorEl(outlinedInputRef.current);
             setIsOpen(true);
         }
@@ -76,7 +62,6 @@ function Services({value, onChange, gender, error = null}) {
         if (alwaysOpen) {
             return;
         }
-        // setIsOpen((isOpen) => !isOpen);
         setIsOpen((prev) => {
             const willOpen = !prev;
             if (willOpen) {
@@ -94,29 +79,35 @@ function Services({value, onChange, gender, error = null}) {
     useEffect(() => {
         //Fetch services from the backend
         const fetchServices = async () => {
+            setLoading(true);
+            setFetchError(null);
             try {
-                const response = await fetch("/services");
-
-                const contentType = response.headers.get("Content-Type");
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error("Error response: ", errorText);
-                    console.error("Status: ", response.status);
-                    throw new Error("Failed to fetch services");
-                }
-
-                if (!contentType || !contentType.includes("application/json")) {
-                    const text = await response.text();
-                    console.error("Non-JSON response from services: ", text);
-                    throw new Error("Services Response is not JSON");
-                }
-
-                const data = await response.json();
+                // const response = await fetch("/services");
+                //
+                // const contentType = response.headers.get("Content-Type");
+                //
+                // if (!response.ok) {
+                //     const errorText = await response.text();
+                //     console.error("Error response: ", errorText);
+                //     console.error("Status: ", response.status);
+                //     throw new Error("Failed to fetch services");
+                // }
+                //
+                // if (!contentType || !contentType.includes("application/json")) {
+                //     const text = await response.text();
+                //     console.error("Non-JSON response from services: ", text);
+                //     throw new Error("Services Response is not JSON");
+                // }
+                //
+                // const data = await response.json();
+                // setServices(data);
+                // setLoading(false);
+                const data = await getSalonServices();
                 setServices(data);
-                setLoading(false);
             } catch (error) {
-                setFetchError(error.message);
+                const errorMessage = error.response?.data?.message || error.message || "Failed to fetch services";
+                setFetchError(errorMessage);
+            } finally {
                 setLoading(false);
             }
         };
