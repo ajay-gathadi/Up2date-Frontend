@@ -6,7 +6,9 @@ import Services from "./Services.jsx";
 import Employee from "./Employee.jsx";
 import PaymentMethod from "./PaymentMethod.jsx";
 import salonName from "../icons/Up2Date Family Salon.png";
+import Up2dateLogo from "../icons/Up2dateLogo.png";
 import {Alert, Box, Button, Card, CardContent, Container, Grid, Paper, Snackbar, Typography} from "@mui/material";
+import {createCustomer, createCustomerService} from "../services/customerService";
 
 export default function Customer() {
     const [customerData, setCustomerData] = useState({
@@ -38,61 +40,6 @@ export default function Customer() {
             });
         }
     };
-
-    // const createCustomerServices = async (customerId) => {
-    //     const services = customerData.services.map(async (serviceId) => {
-    //         const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
-    //         const online_Amount = Number(customerData.paymentMethod.online) || 0;
-    //         const totalAmount = cash_Amount + online_Amount;
-    //
-    //         let paymentMethodMode = "cash";
-    //         if (cash_Amount > 0 && online_Amount > 0) {
-    //             paymentMethodMode = "both";
-    //         } else if (online_Amount > 0) {
-    //             paymentMethodMode = "online";
-    //         }
-    //
-    //         //CustomerServiceDTO Object
-    //         const customerServiceData = {
-    //             customerId: customerId,
-    //             serviceId: serviceId,
-    //             employeeId: Number(customerData.employeeName),
-    //             paymentMethod: paymentMethodMode,
-    //             // amount: totalAmount / customerData.services.length,
-    //             // cashAmount: cash_Amount / customerData.services.length,
-    //             // onlineAmount: online_Amount / customerData.services.length,
-    //             amount: totalAmount,
-    //             cashAmount: cash_Amount,
-    //             onlineAmount: online_Amount,
-    //             serviceTakenDate: new Date().toISOString(),
-    //         };
-    //         console.log("Sending customer service data: ", customerServiceData);
-    //         console.log("Cash Amount: ", cash_Amount);
-    //         console.log("Online Amount: ", online_Amount);
-    //         console.log("Total Amount: ", totalAmount);
-    //         console.log("Payment Method Object: ", customerData.paymentMethod);
-    //
-    //         const sendResponseToBackend = await fetch("/customer-service", {
-    //             method: "POST",
-    //             headers: {"Content-Type": "application/json"},
-    //             body: JSON.stringify(customerServiceData),
-    //         });
-    //
-    //         const responseText = await sendResponseToBackend.text();
-    //         console.log("Full Response: ", responseText);
-    //
-    //         if (!sendResponseToBackend.ok) {
-    //             console.error("Service Creation Error: ", responseText);
-    //             throw new Error(
-    //                 `Service creation failed: ${sendResponseToBackend.status}`
-    //             );
-    //         }
-    //
-    //         return JSON.parse(responseText);
-    //     });
-    //
-    //     return Promise.all(services);
-    // };
 
     const validateForm = () => {
         const errors = {};
@@ -147,22 +94,27 @@ export default function Customer() {
         console.log("Customer Data: ", customerData);
 
         try {
-            const customerResponse = await fetch("/api/customer/create", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    customerName: customerData.customerName,
-                    mobileNumber: customerData.mobileNumber,
-                    gender: customerData.gender,
-                }),
-            });
-
-            if (!customerResponse.ok) {
-                const errorText = await customerResponse.text();
-                throw new Error(`Customer creation failed: ${errorText}`);
-            }
-
-            const createdCustomer = await customerResponse.json();
+            // const customerResponse = await fetch("/api/customer/create", {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify({
+            //         customerName: customerData.customerName,
+            //         mobileNumber: customerData.mobileNumber,
+            //         gender: customerData.gender,
+            //     }),
+            // });
+            //
+            // if (!customerResponse.ok) {
+            //     const errorText = await customerResponse.text();
+            //     throw new Error(`Customer creation failed: ${errorText}`);
+            // }
+            //
+            // const createdCustomer = await customerResponse.json();
+            const createdCustomer = await createCustomer({
+                customerName: customerData.customerName,
+                mobileNumber: customerData.mobileNumber,
+                gender: customerData.gender,
+            })
             const customerId = createdCustomer.customerId;
 
             const cash_Amount = Number(customerData.paymentMethod.cash) || 0;
@@ -187,16 +139,17 @@ export default function Customer() {
                 serviceTakenDate: new Date().toISOString(),
             };
 
-            const serviceResponse = await fetch("/customer-service", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(customerServiceData)
-            });
-
-            if (!serviceResponse.ok) {
-                const errorText = await serviceResponse.text();
-                throw new Error(`Service creation failed: ${errorText}`);
-            }
+            // const serviceResponse = await fetch("/customer-service", {
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify(customerServiceData)
+            // });
+            //
+            // if (!serviceResponse.ok) {
+            //     const errorText = await serviceResponse.text();
+            //     throw new Error(`Service creation failed: ${errorText}`);
+            // }
+            await createCustomerService(customerServiceData);
 
 
             // alert("Data saved successfully");
@@ -220,7 +173,7 @@ export default function Customer() {
 
             setNotification({
                 open: true,
-                message: error.message || "Failed to save customer information",
+                message: error.message?.data?.message || error.message || "Failed to save customer information",
                 severity: "error",
             });
         } finally {
@@ -244,12 +197,21 @@ export default function Customer() {
                 }}
             >
                 <img
+                    src={Up2dateLogo}
+                    style={{
+                        height: "50px",
+                        marginRight: "10px",
+                        marginTop: '-10px',
+                        objectFit: "contain",
+                    }}
+                />
+                <img
                     src={salonName}
                     style={{
                         height: "40px",
                         objectFit: "contain"
                     }}
-                />
+                    alt={"Up2Date Family Salon"}/>
             </Box>
             <Paper
                 sx={{
