@@ -1,17 +1,18 @@
 import {
-  Alert,
-  Avatar,
-  Box,
-  Chip,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
+    Alert,
+    Avatar,
+    Box,
+    Chip,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Typography,
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import PersonIcon from "@mui/icons-material/Person";
+import {getEmployees} from "../services/employeeService";
 
 function Employee({value = "", onChange, error = null}) {
     const [employees, setEmployees] = useState([]);
@@ -21,19 +22,26 @@ function Employee({value = "", onChange, error = null}) {
     useEffect(() => {
         async function fetchEmployees() {
             try {
-                const response = await fetch("/employees");
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch employees");
+                // const response = await fetch("/employees");
+                //
+                // if (!response.ok) {
+                //     throw new Error("Failed to fetch employees");
+                // }
+                //
+                // const data = await response.json();
+                const response = await getEmployees('working');
+                // const activeEmployees = response.filter((employee) => employee.isWorking);
+                if (Array.isArray(response)) {
+                    setEmployees(response);
+                } else {
+                    console.error("API did not return an array of employees: ", response);
+                    setEmployees([]);
                 }
-
-                const data = await response.json();
-                const activeEmployees = data.filter((employee) => employee.isWorking);
-                setEmployees(activeEmployees);
-                setLoading(false);
             } catch (error) {
                 console.error("Error fetching employees: ", error);
-                setFetchError(error.message);
+                const errorMessage = error.response?.data?.message || error.message || "Failed to fetch employees";
+                setFetchError(errorMessage);
+            } finally {
                 setLoading(false);
             }
         }
@@ -46,18 +54,26 @@ function Employee({value = "", onChange, error = null}) {
         onChange(selectedEmployee);
     }
 
-    const getEmployeeName = () => {
+    // const getEmployeeName = () => {
+    //     if (!value || employees.length === 0) return "";
+    //     const employee = employees.find(
+    //         (currentEmployee) => currentEmployee.employeeId === Number(value)
+    //     );
+    //     return employee ? employee.employeeName : "";
+    // };
+
+    const selectedEmployeeName = useMemo(() => {
         if (!value || employees.length === 0) return "";
         const employee = employees.find(
             (currentEmployee) => currentEmployee.employeeId === Number(value)
         );
         return employee ? employee.employeeName : "";
-    };
+    }, [value, employees])
 
     const handleDeleteEmployee = (event) => {
         if (event) {
             event.preventDefault();
-            event.stopPropogation();
+            event.stopPropagation();
         }
         onChange("");
     };
@@ -133,7 +149,7 @@ function Employee({value = "", onChange, error = null}) {
                                         <PersonIcon/>
                                     </Avatar>
                                 }
-                                label={getEmployeeName()}
+                                label={selectedEmployeeName}
                                 onDelete={(e) => handleDeleteEmployee(e)}
                                 sx={{
                                     fontFamily: "Inter",
