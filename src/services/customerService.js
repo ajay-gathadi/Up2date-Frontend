@@ -1,6 +1,6 @@
 import apiClient from "../api/apiClient";
 
-const getAllCustomer = () => {
+export const getAllCustomer = () => {
     return apiClient.get("/api/customers");
 }
 
