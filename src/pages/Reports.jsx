@@ -202,7 +202,7 @@ function Reports() {
                                                     .slice(customerPage * customerRowsPerPage, customerPage * customerRowsPerPage + customerRowsPerPage)
                                                     .map((currentCustomer, currentIndex) => (
                                                         <TableRow key={`currentCustomer.mobileNumber-${currentIndex}`}>
-                                                            <TableCell>{currentIndex + 1}</TableCell>
+                                                            <TableCell>{(customerPage * customerRowsPerPage) + currentIndex + 1}</TableCell>
                                                             <TableCell>{currentCustomer.customerName}</TableCell>
                                                             <TableCell>{currentCustomer.mobileNumber}</TableCell>
                                                             <TableCell>₹{currentCustomer.totalAmount.toFixed(2)}</TableCell>
