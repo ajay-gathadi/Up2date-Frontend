@@ -30,6 +30,7 @@ import {
     Typography
 } from "@mui/material";
 import {Edit, PersonAdd, PersonRemove} from "@mui/icons-material";
+import {addEmployee, deleteEmployee, getEmployees, updateEmployee} from "../services/employeeService";
 
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([]);
@@ -59,11 +60,12 @@ const EmployeeManagement = () => {
         const fetchEmployees = async () => {
             try {
                 setLoading(true);
-                const response = await fetch("/employees");
-                if (!response.ok) {
-                    throw new Error("Failed to fetch employees");
-                }
-                const data = await response.json();
+                // const response = await fetch("/employees");
+                // if (!response.ok) {
+                //     throw new Error("Failed to fetch employees");
+                // }
+                // const data = await response.json();
+                const data = await getEmployees();
                 setEmployees(data);
             } catch (error) {
                 setError(error.message);
@@ -75,27 +77,35 @@ const EmployeeManagement = () => {
     }, []);
 
     const handleFormSubmit = async () => {
-        const isEditing = editingEmployee !== null;
-        const url = isEditing ? `/employees/${editingEmployee.employeeId}` : `/employees`;
-        const method = isEditing ? 'PUT' : 'POST';
+        // const isEditing = editingEmployee !== null;
+        // const url = isEditing ? `/employees/${editingEmployee.employeeId}` : `/employees`;
+        // const method = isEditing ? 'PUT' : 'POST';
 
         try {
             setSubmitting(true);
-            const response = await fetch(url, {
-                method: method,
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    employeeName: formData.name,
-                    gender: formData.gender,
-                    isWorking: formData.isWorking,
-                })
-            });
+            // const response = await fetch(url, {
+            //     method: method,
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         employeeName: formData.name,
+            //         gender: formData.gender,
+            //         isWorking: formData.isWorking,
+            //     })
+            // });
+            //
+            // if (!response.ok) {
+            //     throw new Error(isEditing ? 'Failed to update employee' : 'Failed to add employee');
+            // }
 
-            if (!response.ok) {
-                throw new Error(isEditing ? 'Failed to update employee' : 'Failed to add employee');
-            }
+            // const savedEmployee = await response.json();
+            const isEditing = editingEmployee !== null;
+            const employeePayload = {
+                employeeName: formData.name,
+                gender: formData.gender,
+                isWorking: formData.isWorking,
+            };
 
-            const savedEmployee = await response.json();
+            const savedEmployee = isEditing ? await updateEmployee(editingEmployee.employeeId, employeePayload) : await addEmployee(employeePayload);
 
             if (isEditing) {
                 setEmployees(employees.map(currentEmployee => currentEmployee.employeeId === savedEmployee.employeeId ? savedEmployee : currentEmployee));
@@ -104,7 +114,7 @@ const EmployeeManagement = () => {
             }
             handleCloseModal();
         } catch (error) {
-            setError(error.message);
+            setError(error.response?.data?.message || error.message);
         } finally {
             setSubmitting(false);
         }
@@ -137,21 +147,25 @@ const EmployeeManagement = () => {
 
         try {
             setSubmitting(true);
-            const response = await fetch(`/employees/${deleteTarget.employeeId}`, {
-                method: 'DELETE',
-            });
+            // const response = await fetch(`/employees/${deleteTarget.employeeId}`, {
+            //     method: 'DELETE',
+            // });
 
-            if (!response.ok) {
-                throw new Error('Failed to delete employee');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Failed to delete employee');
+            // }
 
-            setEmployees(employees.map(currentEmployee => currentEmployee.employeeId === deleteTarget.employeeId ? {
-                ...currentEmployee,
-                isWorking: false
-            } : currentEmployee));
+            // setEmployees(employees.map(currentEmployee => currentEmployee.employeeId === deleteTarget.employeeId ? {
+            //     ...currentEmployee,
+            //     isWorking: false
+            // } : currentEmployee));
+            await deleteEmployee(deleteTarget.employeeId);
+
+            const updatedEmployees = await getEmployees();
+            setEmployees(updatedEmployees);
             setDeleteTarget(null);
         } catch (error) {
-            setError(error.message);
+            setError(error.response?.data?.message || error.message);
         } finally {
             setSubmitting(false);
         }
