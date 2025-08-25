@@ -9,19 +9,20 @@ import salonName from "../icons/Up2Date Family Salon.png";
 import Up2dateLogo from "../icons/Up2dateLogo.png";
 import {Alert, Box, Button, Card, CardContent, Container, Grid, Paper, Snackbar, Typography} from "@mui/material";
 import {createCustomer, createCustomerService} from "../services/customerService";
+import {useCustomer} from "../hooks/useCustomer";
+import {CustomerProvider} from "../context/CustomerContext";
 
-export default function Customer() {
-    const [customerData, setCustomerData] = useState({
-        customerName: "",
-        mobileNumber: "",
-        gender: "",
-        services: [],
-        employeeName: "",
-        paymentMethod: {cash: null, online: null, type: "cash"},
-    });
+function CustomerForm() {
+    // const [customerData, setCustomerData] = useState({
+    //     customerName: "",
+    //     mobileNumber: "",
+    //     gender: "",
+    //     services: [],
+    //     employeeName: "",
+    //     paymentMethod: {cash: null, online: null, type: "cash"},
+    // });
+    const {customerData, updateCustomerData, resetCustomerData} = useCustomer();
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [submitted, setSubmitted] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const [notification, setNotification] = useState({
         open: false,
@@ -29,8 +30,8 @@ export default function Customer() {
         severity: "success",
     });
 
-    const updateCustomerData = (key, value) => {
-        setCustomerData((previousData) => ({...previousData, [key]: value}));
+    const handleUpdate = (key, value) => {
+        updateCustomerData(key, value)
 
         if (formErrors[key]) {
             setFormErrors((previousErrors) => {
@@ -78,7 +79,6 @@ export default function Customer() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(null);
 
         if (!validateForm()) {
             setNotification({
@@ -151,17 +151,7 @@ export default function Customer() {
             // }
             await createCustomerService(customerServiceData);
 
-
-            // alert("Data saved successfully");
-
-            setCustomerData({
-                customerName: "",
-                mobileNumber: "",
-                gender: "",
-                services: [],
-                employeeName: "",
-                paymentMethod: {cash: null, online: null, type: "cash"},
-            });
+            resetCustomerData();
 
             setNotification({
                 open: true,
@@ -173,7 +163,7 @@ export default function Customer() {
 
             setNotification({
                 open: true,
-                message: error.message?.data?.message || error.message || "Failed to save customer information",
+                message: error.response?.data?.message || error.message || "Failed to save customer information",
                 severity: "error",
             });
         } finally {
@@ -253,7 +243,7 @@ export default function Customer() {
                                         <CustomerName
                                             value={customerData.customerName}
                                             onChange={(value) =>
-                                                updateCustomerData("customerName", value)
+                                                handleUpdate("customerName", value)
                                             }
                                             error={formErrors.customerName}
                                         />
@@ -263,7 +253,7 @@ export default function Customer() {
                                         <MobileNumber
                                             value={customerData.mobileNumber}
                                             onChange={(value) =>
-                                                updateCustomerData("mobileNumber", value)
+                                                handleUpdate("mobileNumber", value)
                                             }
                                             error={formErrors.mobileNumber}
                                         />
@@ -272,7 +262,7 @@ export default function Customer() {
                                     <Grid size={{xs: 12}} sx={{mt: 1, paddingTop: 0.7}}>
                                         <Gender
                                             value={customerData.gender}
-                                            onChange={(value) => updateCustomerData("gender", value)}
+                                            onChange={(value) => handleUpdate("gender", value)}
                                             error={formErrors.gender}
                                         />
                                         {formErrors.gender && (
@@ -300,7 +290,7 @@ export default function Customer() {
                                                 <Services
                                                     value={customerData.services}
                                                     onChange={(value) =>
-                                                        updateCustomerData("services", value)
+                                                        handleUpdate("services", value)
                                                     }
                                                     gender={customerData.gender}
                                                     error={formErrors.services}
@@ -320,7 +310,7 @@ export default function Customer() {
                                                 <Employee
                                                     value={customerData.employeeName}
                                                     onChange={(value) =>
-                                                        updateCustomerData("employeeName", value)
+                                                        handleUpdate("employeeName", value)
                                                     }
                                                     error={formErrors.employeeName}
                                                 />
@@ -357,7 +347,7 @@ export default function Customer() {
                                             <PaymentMethod
                                                 value={customerData.paymentMethod}
                                                 onChange={(value) =>
-                                                    updateCustomerData("paymentMethod", value)
+                                                    handleUpdate("paymentMethod", value)
                                                 }
                                             />
 
@@ -436,4 +426,12 @@ export default function Customer() {
             </Paper>
         </Container>
     );
+}
+
+export default function Customer() {
+    return (
+        <CustomerProvider>
+            <CustomerForm/>
+        </CustomerProvider>
+    )
 }
